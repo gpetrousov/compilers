@@ -107,6 +107,27 @@ Examples: 1+2*3
 <digit> ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 ```
 
+### EBNF
+- Extended BNF
+- Has the following aditional symbols.
+
+| Usage            | Notation                     |
+|------------------|------------------------------|
+| definition       | `=`                          |
+| concatenation    | `,`                          |
+| termination      | `;`                          |
+| alternation      | `\|`                         |
+| optional         | `[ ... ]`                    |
+| repetition       | `{ ... }` zero or more times |
+| grouping         | `( ... )`                    |
+| terminal string  | `" ... "`                    |
+| terminal string  | `' ... '`                    |
+| comment          | `(* ... *)`                  |
+| special sequence | `? ... ?`                    |
+| exception        | `-`                          |
+
+- Ref: https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form#EBNF
+
 ### A valid programming language has
 1. A defined syntax
 		- is defined with the use of matalanguages
@@ -145,6 +166,7 @@ U = N ∪ T (union of non-terminal and terminal symbols)
 - Chomsky type 3: __regular grammar__
 		- Used in the lexical analysis in the compiler
 		- Programs in these languges can be described by FSMs (Finite State Machines)
+		- Grammar productions: A → a or A → a B
 - Ref: https://en.wikipedia.org/wiki/Chomsky_hierarchy#The_hierarchy
 
 ### Parsing
@@ -170,7 +192,7 @@ U = N ∪ T (union of non-terminal and terminal symbols)
 		- Group lexical tokens
 		- Examples of lexical tokens: numbers, identifiers, punctuation, operators, strings, etc.
 		- Chomsky type 3
-		- OUTPUT: groups of lexical tokens
+		- OUTPUT: group of lexical tokens
 2. Syntax analysis
 		- INPUT: groups of lexical tokens
 		- Perform reduction on the lexical token group and reduce them into BNF statements
@@ -196,3 +218,266 @@ U = N ∪ T (union of non-terminal and terminal symbols)
 		- Optimizes generated machine code
 
 ![Phases of compilation](assets/phases_of_compilation.png)
+
+## Chapter 3
+- Examine 2 approaches to designing a lexical analyser.
+		1. Direct implmementation.
+				- Hand crafted lexical analyser (we write the code).
+		2. Syntactic specification of lexical tokens (formal path).
+				- Use regexes to identify lexical tokens.
+
+### 1. Direct implementation
+
+### Lexical analysis
+- Break the program into a sequence of tokens.
+- All the lexical tokens should be definable in terms of regular expressions Chomsky type 3.
+- Nested structures cannot be expressed with regexes and are left for the next stage.
+- Does not check for syntax correctness, i.e. "The syntax correctness of the while loop".
+- In general, comments can be ignored.
+- Some whitespeces cannot be ignored (int a; // Note space after 'a')
+- Source line numbers can be included in the Output.
+		- Easier to debug later in case of errors or warnings.
+- INPUT: Source program
+- Output: Lexical tokens
+
+Example
+
+```
+// Input
+while (i <= 100) {
+tot += a[i]; /* form vector total */
+i++;
+}
+```
+
+```
+// Output
+while (reserved word), (, i (identifier), <=, 100 (integer constant), ), {, tot (identifier),
++=, a (identifier), [, i (identifier), ], ;, i (identifier), ++, ;, }
+```
+
+### Enum in C
+- Special kind of data type defined by the user.
+- Consists of constant integrals or integers that are given names by a user.
+-  The use of enum in C to name the integer values makes the entire program easy to learn.
+- Enum is derrived from the mathematical constant ingegration:
+d/dx f(x) = f'(x)
+∫f′(x).dx = g(x)+C
+And g(x)+C = f(x).
+
+So, the integration ∫f′(x).dx is equal to g(x) plus a constant 'C', which can be any random constant.
+
+Example
+```C
+enum flag {const1, const2, ..., constN};
+// By default const1=0, const2=1, ...
+// OR, custom values
+enum days {
+		Monday = 1,
+		Tuesday = 2,
+		Wednesday = 3,
+		Thursday = 4,
+};
+```
+- Ref: https://www.cuemath.com/calculus/constant-of-integration/
+- Ref: https://www.programiz.com/c-programming/c-enumeration
+
+### typedef in C
+- Used to give a type a new name.
+- Or create an entirely new type, such as when using enum.
+Example
+
+```C
+// Define a custom type named BYTE
+typedef unsigned char BYTE;
+// Use BYTE to create variables b1 and b2
+BYTE b1, b2;
+
+typedef enum {
+		Monday,
+		Tuesday,
+		Wednesday,
+		Thursday,
+} days;
+
+days day_of_week();
+```
+- Ref: https://www.tutorialspoint.com/cprogramming/c_typedef.htm
+
+### Case statement in C
+
+```C
+switch (expression)
+{
+    case constant1:
+      // statements
+      break;
+
+    case constant2:
+      // statements
+      break;
+    .
+    .
+    .
+    default:
+      // default statements
+}
+```
+- Ref: https://www.programiz.com/c-programming/c-switch-case-statement
+
+### Maximun integer value in C
+- Defined in `/usr/include/limits.h`
+- `#  define INT_MAX   2147483647`
+- `2^31-1`
+ 
+### Sidenote on the lexical analyser
+- Define a function lex().
+		- Takes no arguments.
+		- Returns a lextokens result.
+```C
+typedef enum {a,b,c,d} lextokens;
+lextokens lex();
+```
+
+### Error handling by the lexical analyser
+- Ideally, you want the lexical analyser to communication the errors it finds to the syntax analyser.
+- Then the syntax analyser should know how to handle these errors.
+- Until the communication (lexical analyser <=> syntax analyser) is established, the first one should print the errors to `stderr`.
+
+### Testing (lexical analyser)
+- The lexical analyser has to be sufficiently tested.
+- Test are automated, a main program feeds the lexical analyser with code and expects the correct results back.
+- Edge cases must be taken into account.
+- Writing test for the lexical analyser can prevent later issues with syntax analyser.
+
+---
+
+### 2. Implementation via regexes (Tool based implementation)
+
+### Regular expressions
+- A regex is made up of symbols of the language + operators
+- Operators:
+		- concatenation: specified by symbol adjacency
+		- alteration: specified with '|'
+				- One or the other.
+				- If succeded by *, then you can repeat symbols zero of multiple times
+		- repetition: specified with '*'
+				- applied to the left.
+				- Zero or more repetitions.
+		- Parenthesis: denote grouping of actions.
+- Precedence:
+		1. repetition
+		2. concatenation
+		2. alteration
+
+```regex
+• abc denotes the set of strings with the single member {abc}.
+• a|b|c denotes the set {a, b, c}.
+• a∗ denotes {ε, a, aa, aaa,...}. ε is the empty string.
+• ab∗ denotes the infinite set {a, ab, abb, abbb,...}.
+• (a|b)∗ denotes the set of strings made up of zero or more a’s or b’s.
+• a(bc|d)∗e denotes the set of strings including {ae, abce, abcde, ade,...}.
+```
+- A specification in regex is not necessarily unique: a(b|c) == ab|ac
+
+### Other regex symbolx
+- `+`: 1 or more repetitions
+- `.`: represents the wildcard character
+- `?`: zero or one occurrence of the one-character regular expression(match as little as possible): https://stackoverflow.com/questions/8575281/regex-plus-vs-star-difference
+- `\\`: to match a special character
+- `^`: https://stackoverflow.com/questions/16944357/carets-in-regular-expressions
+		- when at the start and inside `[]` means "not the following", so `[^...]`
+		- when inside [] but not at the start, it means the actual ^ character
+		- Examples:
+				1. [^abc] 		 -> not a, b or c
+				2. [ab^cd] 		 -> a, b, ^ (character), c or d
+				3. \^ 			 -> ^ character
+				4. Anywhere else -> **start** of string/line.
+- `[ ]`: create a matching list that will match any of the characters in the list, so [abc] == any of a, b, or c
+- `$`: matches only the ending of a line, so `o$` == only words ending in o
+- `&`: ???
+- Online regex tester: https://regexr.com/
+- Ref: https://users.cs.cf.ac.uk/Dave.Marshall/Internet/NEWS/regexp.html
+
+### Finite State Machines (Finite State Automata)
+- Transition diagram.
+		- Each node is called a state.
+		- You have a starting state.
+		- You have an ending/acceptable sate (double circles).
+		- Edges are labeled.
+
+![FSM example](assets/FSM_example.png)
+
+- Transition tables can be used to describe machines as well.
+
+![FSM transition table](assets/FSM_transition_table.png)
+
+- Deterministic finite-state machines
+		- For each state there is there is at most one possible state for each input symbol.
+		- "The entries in the transition table are either empty or contain a single next state."
+
+- Non-Deterministic finite-state machines
+		- An input symbol can trigger the machine into more than one next state simultaneously.
+		- Multiple starting states.
+
+### Lexical analyser implementation with regex
+- Is a hard and time consuming process.
+		- Simplify transition tables is hard.
+- We use sofwrare which generates lexers by providing language specification.
+
+### Lexical analyser constructor (tools) software
+- Unix tool: lex (look man page || `info lex`)
+		- Lesk ME (1975) Lex – a lexical analyser generator. AT&T Bell Laboratories, Murray Hill. Computing Science Technical Report 39
+- Flex (look man page || `info flex`)
+		- Levine J (2009) Flex & bison. O’Reilly Media, Sebastopol
+- More out there...
+- Easy to use and easy to generate lexers.
+- Generate very efficient lexical analysers
+
+### Flex
+- Popular tool for generating lexers.
+- INPUT:
+
+```Flex
+definitions
+%%
+rules
+%%
+user code
+```
+- OUTPUT
+		- yylex()
+				- Returns the next token and executes its code from the rules.
+- Example
+```Flex
+letter			[a-zA-Z]
+digit 			[0-9]
+letter_or_digit [a-zA-Z0-9]
+white_space 	[ \t\n]
+other 			. # .: Any single character except newline
+%%
+{white_space}+ 			   ; # +: Repeat once or multiple times; Null statement in C (ignore)
+{letter}{letter_or_digit}* return 1;
+{digit}+ 				   return 2;
+{other} 				   return 3;
+%%
+int main() {
+		int lextoken;
+		while (lextoken = yylex())
+				printf("%d - %s\n",lextoken, yytext);
+		}
+int yywrap()
+{
+		return 1;
+}
+```
+- Generates lexers in C and C++
+- Can be connected with scripting languages with SWIG: https://en.wikipedia.org/wiki/SWIG
+
+### Flex docs
+- `yytext`: contains the text that matched the regular expression pattern in the rule
+
+### Which one to use (tool or manual)
+- There is no correct answer here.
+- A combination of both is also possible:
+		- Write flex + custom code in the same file to recognize symbols.
