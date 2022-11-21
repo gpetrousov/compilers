@@ -116,7 +116,7 @@ Examples: 1+2*3
 | definition       | `=`                          |
 | concatenation    | `,`                          |
 | termination      | `;`                          |
-| alternation      | `\|`                         |
+| alternation      | `|`                         |
 | optional         | `[ ... ]`                    |
 | repetition       | `{ ... }` zero or more times |
 | grouping         | `( ... )`                    |
@@ -481,3 +481,81 @@ int yywrap()
 - There is no correct answer here.
 - A combination of both is also possible:
 		- Write flex + custom code in the same file to recognize symbols.
+
+
+### Exercises
+- #WIP Create my own lexer for DL using flex.
+
+## Chapter 4
+
+### Derivation
+- Is the process of going from (E)BNF to forming the tokens
+- Two types:
+		- **Left-most derivation**: expand from left to right (Equal to top-down reductions)
+		- **Right-most derivation**: expand from right to left (Equal to buttom-up reductions)
+- Choice matters, as seen in Chapter 2
+- The process of parsing is equivalent to performing derivation in reverse.
+		- source => BNF
+
+### Lookahead
+- Prasing becomes difficult for uncertain productions, such as P → Q|R (Which production is correct?)
+- Lookahead solves that issue: used for non-simple grammars (alterations)
+		- Alternative to backtracking (which is difficult to implement)
+		- Looks ahead of the production to see if it produces the correct result based on what has already been produced.
+		- One Lookahead is usually enough for most languages.
+
+### Traditional parsers
+- Associate a function with each non-terminal symbol.
+		- Its task is to recognise an instance of that non-terminal.
+		- Functions call each other according to the syntax rules of the grammar, matching terminal tokens from the input as they go.
+		- This is a recursive descent parser.
+
+### Factoring
+- Is a transformation to avoid backtracking or having multiple Lookaheads.
+- A complicated alteration is replaced with a simpler one in which one lookahead can predict the correct production.
+Example
+
+```
+A → αβ|αγ # Which way is correct?
+
+# Instead, we factor to the following where a single Lookahead is enough.
+A → αA1
+A1 → β|γ
+```
+- "There are of course grammars that are best dealt with by increasing the parser lookahead, but this comes at a cost of increased complexity."
+
+### Types of parsers
+- Top-down parsers: left-most derivation
+- Bottom-up parsers; right-most derivation in reverse
+		- Rarely writen by hand.
+		- Usually generatd by software.
+		- Are more powerful.
+		- Have added complexity.
+
+### Grammar to parser classification
+- `LL(k)`: Read Left to right, Leftmost derivation, k lookaheads max.
+- `LR(k)`: Read Left to right, Rightmost derivation in reverse, k lookaheads max.
+- Most programming languages: `LL(1)`.
+- `LL(k)` grammars are `LR(k)`
+- `LR(k)`: harder to implement, more powerfull than `LL(k)`
+
+### Bottom-up parsing - "canonical parsing"
+- Rightmost derivation in reverse.
+		- Given an expression: `x+y*z`
+		- Produce BNF: `<expr>` 
+Example
+![Rightmost derivation in reverse](assets/rightmost_derivation_reverse.png)
+- Standardized algorithms exist.
+- SOme lookahead is necessary.
+- `The handle`:
+		- The substring match with the production on the right hand side.
+		- Key problem in bottom-up parsing, identification of the handle.
+		Example:
+		In `x+y*z`, which substring to use to produce BNF, i.e. of the form `<expr>+<term>`?
+
+### Syntax tree simplification
+
+![Syntax tree to AST](assets/syntax_tree_simplification.png)
+
+### Further reading
+- #WIP Great further reading about dynamic parsers.
