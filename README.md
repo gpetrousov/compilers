@@ -471,10 +471,17 @@ int yywrap()
 		return 1;
 }
 ```
+- The `rules` in the input is a table in which:
+		- The left column contains regexes to identify expressions.
+		- The right column contains actions to be executed when the expressions are matched.
+		- The colums are dictated by space.
+		Example
+		```C
+		integer printf("found keyword INT");
+		// Looks for the "integer" string and prints "found keyword INT"
+		```
 - Generates lexers in C and C++
 - Can be connected with scripting languages with SWIG: https://en.wikipedia.org/wiki/SWIG
-
-### Flex docs
 - `yytext`: contains the text that matched the regular expression pattern in the rule
 
 ### Which one to use (tool or manual)
