@@ -382,7 +382,7 @@ lextokens lex();
 
 ### Other regex symbolx
 - `+`: 1 or more repetitions
-- `.`: represents the wildcard character
+- `.`: represents the wildcard character (match any single character)
 - `?`: zero or one occurrence of the one-character regular expression(match as little as possible): https://stackoverflow.com/questions/8575281/regex-plus-vs-star-difference
 - `\\`: to match a special character
 - `^`: https://stackoverflow.com/questions/16944357/carets-in-regular-expressions
@@ -398,6 +398,7 @@ lextokens lex();
 - `&`: ???
 - Online regex tester: https://regexr.com/
 - Ref: https://users.cs.cf.ac.uk/Dave.Marshall/Internet/NEWS/regexp.html
+- Online regex exercises: https://regexone.com/lesson/capturing_groups
 
 ### Finite State Machines (Finite State Automata)
 - Transition diagram.
@@ -439,13 +440,14 @@ lextokens lex();
 - INPUT:
 
 ```Flex
+# file: lex.l
 definitions
 %%
 rules
 %%
 user code
 ```
-- OUTPUT
+- OUTPUT (C program `lex.yy.c.`)
 		- yylex()
 				- Returns the next token and executes its code from the rules.
 - Example
@@ -471,7 +473,7 @@ int yywrap()
 		return 1;
 }
 ```
-- The `rules` in the input is a table in which:
+- The `rules` in are defined in 2 columns separated by space:
 		- The left column contains regexes to identify expressions.
 		- The right column contains actions to be executed when the expressions are matched.
 		- The colums are dictated by space.
@@ -483,6 +485,15 @@ int yywrap()
 - Generates lexers in C and C++
 - Can be connected with scripting languages with SWIG: https://en.wikipedia.org/wiki/SWIG
 - `yytext`: contains the text that matched the regular expression pattern in the rule
+		- When called outside of a `while` loop, it only returns a single character.
+		- When it reads multiple characters, it evaluates an action multiple times.
+- The `yywrap` function:
+		- Used to determine whether the lexer has reached the end of a file.
+		- Automatically called from yylex.
+		- If yywrap returns 1: no more characters to analyze (EOF).
+		- if yywrap returns 0: yywrap opened a new file for processing.
+		- It's a mechanism which allows processing of multiple files.
+		- If skipped, `gcc` will complain, should skip it with `%option noyywrap` at the very top of the lexer source file.
 
 ### Which one to use (tool or manual)
 - There is no correct answer here.
