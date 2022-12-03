@@ -497,6 +497,8 @@ int yywrap()
 
 ### Which one to use (tool or manual)
 - There is no correct answer here.
+- There are serveral ways to generate lexers, you don't need to memorize or know them all.
+		- Knowing one way, can lead to understaning of the rest.
 - A combination of both is also possible:
 		- Write flex + custom code in the same file to recognize symbols.
 
@@ -524,12 +526,12 @@ int yywrap()
 
 ### Traditional parsers
 - Associate a function with each non-terminal symbol.
-		- Its task is to recognise an instance of that non-terminal.
+		- It's task is to recognise an instance of that non-terminal.
 		- Functions call each other according to the syntax rules of the grammar, matching terminal tokens from the input as they go.
 		- This is a recursive descent parser.
 
 ### Factoring
-- Is a transformation to avoid backtracking or having multiple Lookaheads.
+- Is a transformation to avoid backtracking or having multiple `Lookaheads`.
 - A complicated alteration is replaced with a simpler one in which one lookahead can predict the correct production.
 Example
 
@@ -573,7 +575,279 @@ Example
 
 ### Syntax tree simplification
 
+- Each node has to contain the data and some meta-data about its content (if statement, integer, constant, etc..).
+- The form of data depends on the content.
+
 ![Syntax tree to AST](assets/syntax_tree_simplification.png)
 
 ### Further reading
 - #WIP Great further reading about dynamic parsers.
+
+## Chapter 5 (Syntax analysis)
+
+### Generating parsers
+- There are many ways of writing a parser and their complexity varies.
+- You don't need to know all of them, just a single technique from which you can derrive the rest.
+- Powerful tools generating bottom-up parsers: `yacc`, `bison` or `CUP`
+
+### Simple top-down C parser
+
+- Single lookahead stage.
+- The lookahead variable ch should already contain the first token of the non-terminal being recognised.
+- Lookahead consistency is a common error in this type of parsers.
+This is all best illustrated by an example (from Sect. 4.2.3).
+``
+S → Az|z
+A → x A|B
+B → y
+```
+Here is a complete C program to recognise strings of this language.
+
+```C
+#include <stdio.h>
+#include <stdlib.h>
+int ch;
+void error(char *msg) {
+printf("Error - found character %c - %s\n",ch,msg);
+exit(1);
+}
+void b() {
+if (ch == ’y’) ch = getchar();
+else error("y expected");
+}
+void a() {
+if (ch == ’x’) {
+ch = getchar();
+a();
+}
+else b();
+}
+void s() {
+if (ch == ’z’) ch = getchar();
+else {
+a();
+if (ch != ’z’) error("z expected");
+else ch = getchar();
+}
+printf("Success!\n");
+}
+int main(int argc, char *argv[])
+{ ch = getchar();
+s();
+return 0;
+}
+```
+
+Examples
+```shell
+$ ./simpletopdown
+xyz
+Success!
+$ ./simpletopdown
+xxxxyz
+Success!
+$ ./simpletopdown
+xxxxz
+Error - found character z - y expected
+$ ./simpletopdown
+z
+Success!
+```
+
+### Shift reduce parsers
+
+![Shift reduce parsers](assets/shift_reduce_parsers.png)
+
+- **The choices of the parser have been done without justification or explanation.**
+- Programming the choice logic is:
+		- Difficult to implement by hand.
+		- Relies on 2 or 3 dimensional arrays.
+		- Gets complicated.
+		- Simplified by parser generators: bison
+- _precedence parsing_:
+		- Consists of 2 indexes:
+				1. index for the top of the stack.
+				2. index for the next input character (shift).
+		- Based on these 2 tokens, the parser can decide whether to reduce, shift or error.
+
+### LALR(k)
+- `LA`: Read left to right
+- `LR`: Uses the revers Rightmost derivation
+- `k`: lookaheads
+
+### Parser generators
+- `yacc`: LALR(1) parsers in C
+- `bison`: GNU Project version of yacc
+		- Can generate table-driven LALR(1) in C
+		- Includes support for other bottom-up parsing methods.
+- `bison` and `flex` are used in tandem.
+
+### The `bison` parser generator
+- Similar input as `flex`.
+- Instead of regexes, it accepts _grammar production rules_.
+- Produces parsers in `C`.
+- Is combined with `flex`:
+		- The generated parser calls functions from the generated lexer.
+- `yyparse()`: bison generated parser function (just like `yylex()` for `flex`).
+		- return 0 :Successful parse.
+
+### Reverse Right-most derivation
+```
+S → Az|z
+A → x A|B
+B → y
+```
+- normal: `S → Az → x Az → xBz → xyz`.
+- reverse: read the normal from right to left.
+		- Start with the terminal symbol.
+
+
+### bison input files (terminated by *.y)
+```
+definitions
+%%
+rules
+%%
+user code
+```
+- Similar strcture with `flex` with 2 columns: patterns and instructions
+**Rules**
+- \<patterns\> \<instructions\>
+- The patterns are __grammar reduction rules__
+- A colon is used to separate the **non-terminal** from its **definition**
+
+**Example**
+
+```C
+%{
+#include <stdio.h>
+void yyerror(char*);
+int yylex(void);
+%}
+%%
+S:
+A ’z’ { printf("S->Az, done\n"); }
+| ’z’ { printf("S->z, done\n"); }
+A:
+’x’ A { printf("A->xA\n"); }
+| B { printf("A->B\n"); }
+B:
+’y’ { printf("B->y\n"); }
+%%
+void yyerror(char *s)
+{
+printf("***%s\n",s);
+}
+int yylex() {
+int ch;
+ch=getchar();
+while (ch==’\n’) ch=getchar();
+5.2 Bottom-Up Parsing 105
+return ch;
+}
+int main()
+{
+if (yyparse() == 0) printf("Parsing successful\n");
+else printf("Parsing failure\n");
+return 0;
+}
+```
+- "Because A is not enclosed in quote marks, it is taken as a non-terminal and bison expects its definition to appear in due course"
+- "In this grammar, x, y and z are all terminal symbols because they are enclosed by single quote marks."
+- "And because S is the first non-terminal to be defined, it is taken as the starting symbol."
+- "
+Each rule consists of a pattern and a corresponding action. The idea is simple.
+When the bison-generated parser runs, it matches these patterns with the input,
+controlled by the parsing algorithm, and if a pattern matches, the corresponding
+action is executed. Here, the actions are used for tracing the execution of the
+parsing process. We will worry about more complex actions later, specifically the
+generation of the parse tree.
+"
+- "
+The final section of user code defines additional functions required by the parser.
+Bison simply copies this section straight to its output. The yyerror function is
+called by the parser when an error has been detected and here we just output a
+message. We will tackle the problem of error reporting and recovery later in this
+chapter. The yylex function is the lexical analyser. Here, it gets the next character
+from the input, ignoring newline characters. Although the original BNF grammar
+says nothing about ignoring newlines they are ignored here to result in a slightly
+cleaner user interface, removing the potential confusion caused by the need for a
+newline to send an input buffer to the running program when running interactively.
+Finally the main function is defined. This calls the yyparse function which is
+the bison-generated parser. If yyparse returns the value zero, the parse has been
+successful.
+"
+- `yylex()` is hand-written, should be generated by `flex`
+
+### Ambiquity problems with parsers
+- Can occur when both `reduce/reduce` and `shift/reduce` are possible.
+- "Can occure when two or more rules can be applied to perform a reducion on the same input sequence."
+- Solution: Grammar modification
+- Sometimes difficult to understand from `bison` error outputs.
+
+
+### Bison calculator example
+
+**Grammar definitoin**
+
+```
+<calculation> :: = <expr> \n
+<expr> :: = <term> |<expr> + <term> | <expr> - <term>
+<term> :: = <factor> | <term> * <factor> | <term> / <factor>
+<factor> :: = CONSTANT | (<expr>)
+```
+
+```C
+%{
+#include <stdio.h>
+#include <ctype.h>
+void yyerror(char*);
+int yylex(void);
+int ival;
+%}
+%token CONSTANT
+%%
+calculation:
+expr ’\n’ { printf("%d\n", $1); }
+expr:
+term { $$ = $1; }
+| expr ’+’ term { $$ = $1 + $3; }
+| expr ’-’ term { $$ = $1 - $3; }
+term:
+factor { $$ = $1; }
+| term ’*’ factor { $$ = $1 * $3; }
+| term ’/’ factor { $$ = $1 / $3; }
+factor:
+CONSTANT { $$ = ival; }
+| ’(’ expr ’)’ { $$ = $2; }
+%%
+void yyerror(char *s)
+{
+printf("***%s\n",s);
+}
+int yylex() {
+int ch;
+ch=getchar();
+while (ch==’ ’) ch=getchar();
+if (isdigit(ch)) {
+ival=0;
+while (isdigit(ch)) {
+ival=ival*10+(int)ch-(int)’0’; /* ignore overflow */
+ch=getchar();
+}
+ungetc(ch,stdin);
+return CONSTANT;
+}
+else return ch;
+}
+int main()
+{
+return yyparse();
+}
+```
+- `$$`: the result
+- `$1`: left token
+- `$2`: middle token | constant
+- `$3`:  right token
+- `ival`: holds the value of the calculation
+- 'CONSTANT': used to recognize a constant (flex)
