@@ -341,7 +341,6 @@ int main( ) {
    ...
 ```
 
-
 ### Maximun integer value in C
 - Defined in `/usr/include/limits.h`
 - `#  define INT_MAX   2147483647`
@@ -868,3 +867,10 @@ return yyparse();
 - `$3`:  right token
 - `ival`: holds the value of the calculation
 - 'CONSTANT': used to recognize a constant (flex)
+
+### Hand writen or Generated compiler Front-end
+- There is no perfect option here.
+- It depends on the use case and the requirements of the language.
+
+### Implementation of compiler frontend (`lexer+parser`) for DL
+See [DL_compiler_frontend.md](file://DL_compiler_frontend.md)
