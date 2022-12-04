@@ -325,6 +325,23 @@ switch (expression)
 ```
 - Ref: https://www.programiz.com/c-programming/c-switch-case-statement
 
+### Union in C
+- Type of data structure which can store multiple data types under a single name.
+
+```C
+...
+union Data {
+   int i;
+   float f;
+   char str[20];
+};
+ 
+int main( ) {
+   union Data data;
+   ...
+```
+
+
 ### Maximun integer value in C
 - Defined in `/usr/include/limits.h`
 - `#  define INT_MAX   2147483647`
