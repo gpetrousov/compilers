@@ -874,3 +874,9 @@ return yyparse();
 
 ### Implementation of compiler frontend (`lexer+parser`) for DL
 See [DL_compiler_frontend.md](file://DL_compiler_frontend.md)
+
+### How to pracrise
+- Checkout the grammar of known languages and try to implement it.
+		- The C programming language, see KR Book.
+- Checkout `Pyparsing`: https://pypi.org/project/pyparsing/
+		- https://en.wikipedia.org/wiki/Parsing_expression_grammar
