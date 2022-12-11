@@ -877,6 +877,175 @@ See [DL_compiler_frontend.md](file://DL_compiler_frontend.md)
 
 ### How to pracrise
 - Checkout the grammar of known languages and try to implement it.
+
 		- The C programming language, see KR Book.
 - Checkout `Pyparsing`: https://pypi.org/project/pyparsing/
+
 		- https://en.wikipedia.org/wiki/Parsing_expression_grammar
+
+## Chapter 6 (Semantic analysis)
+
+### Semantic analysis
+- Concerned with type checking.
+- Type casting.
+- Usually, static typing is more helpful in compiler design.
+- Uses the symbol table to record types of variables and track complex/user defined types.
+
+example: `struct, typedef, union`
+```C
+typedef struct tnode {
+int asttype;
+int astdata1,astdata2;
+astptr p1,p2,p3;
+} astnode;
+
+union utype {
+char xch;
+int xint;
+float xfloat;
+} uval;
+```
+
+- Updates/Annotates the syntax tree by adding types to its nodes (`recursive post-order traversal`).
+
+		- A node's type is derived from the types of its children.
+
+Example: `expression: expression ’+’ term { $$ = $1 + $3; }`
+
+![Semantic tree annotation](assets/semantic_tree_annotation.png)
+
+- Deals with variable scope:
+
+		- Using a stack.
+		- A stack pointer points to local variables within a context.
+		- Once out of a context, we the stack pointer is restored to the outter context.
+![Stack pointer for scope](assets/function_scoping.png)
+		- Global variables are access via a different pointer (`gp`).
+
+### 2D Arrays in C
+Defined as arr[i][j] where:
+		- `i` is the row
+		- `j` is the column
+
+```C
+int arr[3][4];
+```
+
+![2D array in C](assets/2d_array_C.png)
+
+Any element (e) is accessible via its address:
+
+`addr(e) = (i*4 + j) * size_of_int`
+
+### Attribute grammar
+
+- Complements the Chomsky type 2 grammer (free context).
+- Describes the types of the nodes (**semantic information**) in the AST (Abstract Syntax Tree).
+- Semantic informaiton is stored in attributes associated with terminal and non-terminal symbols.
+
+### Intermediate Code (`IR`)
+
+- Interface between the frontend and backend of a compiler.
+- Multiple IRs can be used to generate machine code.
+- "It should not be regarded as an interface with which the user of the
+compiler is particularly concerned, but ensuring that there is a way for the compiler
+writer or interested user to inspect a human-readable representation of the IR is
+important."
+- Should be easily translatable into machine code.
+- Should permit aggressive code optimization.
+- Graph based IRs and Linear based IRs.
+
+		- Each type has its tradeoffs.
+		- There is no standard.
+
+### Linear IRs
+
+- Is regarded as machine code for a virtual machine.
+- We can use higher level programming languages (i.e. C or Rust) as IRs.
+		
+		- Generated C IR.
+		- Compile the C IR using GCC and produce machine code.
+
+### Traditional IRs
+
+- Implemented in hte early days of compilers.
+- Targeted stack-based hardware.
+- Don't work well with the powerful optimization algorithms today.
+- Example is JVM.
+
+### Non-stacked IRs (modern IRs)
+
+- More modern and powerful.
+- Linear IRs, container an operator, up to 2 arguments and a result.
+- Are more popular.
+- Representation in a 3 address code:
+
+Example
+```
+x = y*3 + z;
+is
+t1 = y ∗ 3
+x = t1 + z
+```
+- **There are similarities in RISC commands and 3-address code instructions.**
+
+### Graph based IRs
+
+- Optimization is difficult.
+- Common sub-expressions in the AST.
+- An AST becomes a i(Directed Acyclic Graph) DAG.
+
+Example
+
+![AST to DAG in Graph based IRs](assets/AST_to_DAG.png)
+
+### Control Flow Graphs (`CFG`)
+
+- Is a directed graph.
+- Nodes represent instructions.
+- Edges represent possible flows.
+
+
+### Data Dependence Graphs (`DDG`)
+
+- Show the control flow of a program.
+
+Example
+
+```C
+x = a + b;
+y = a + 2;
+z = x * b;
+```
+
+- Here the value of `z` depends on the vlaue of `x`.
+- The operation of `x` must be preceded.
+- So, in the DDG, the node for `x` is connected with the node for `z`
+- The node for `z` is independent, that's why this representation is complementary and not complete.
+
+
+### Practical considerations for three-address code IR
+
+- Checkout the dragon book for three-address IRs.
+
+### Three-Address code IR
+
+- Local variables: v0,v1,v2,..vn
+- Global variables: vg0,vg1,vg2,..vgn
+- Registers: r0,r2,r3,..,rn
+- None of the instructions can use more than three addresses.
+- Instructions:
+
+		- Assignments with two arguments and a destination (a = b op c), with a single argument for a unary operator and a destination (a = op b) and simple copy assignments (a = b).
+		- Unconditional jumps (goto label).
+		- Conditional jumps (if a relop b goto label).
+		- Array access (a = x[i] and x[i] = a).
+		- Function call (call function, and arguments are passed by preceding the call with
+		an appropriate number of param instructions of the form param arg).
+		- Function return (return).
+		- Input and output (read a and write a).
+Example
+![DL to Three-address IR](assets/DL_to_three-address-IR.png)
+
+
+**!It's important to remember that at this point we're not conserned with optimization. We don't want to get into premature optimization. So, the IR can be as simple as necessary to achieve the goal of translation.**
