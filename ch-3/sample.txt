@@ -1,0 +1,30 @@
+/* This is a random text to test out your lexer. */
+
+/* Random multiline text */
+Greatly hearted has who believe.
+Drift allow green son walls years for blush.
+Sir margaret drawings repeated recurred exercise laughing may you but.
+Do repeated whatever to welcomed absolute no.
+Fat surprise although outlived and informed shy dissuade property. 
+Musical by me through he drawing savings an. No we stand avoid decay heard mr. Common so wicket appear to sudden worthy on. Shade of offer ye whole stood hoped.
+
+/* Multiline random strings */
+Zg4HDIR6XU
+ZaBXTLbcka
+tAaAEXtXlp
+y0VW0sUfjW
+aXtpKaGMDw
+azmJhcgYsz
+DvwL9DeLyk
+wSNo1P3hdi
+NqjyrBSnXO
+usdn47hSug
+g2F22xqMic
+BSdMcwYpFZ
+iolyyljl8U
+OodJiU8dEC
+p81mbxA7oU
+TIpA8UKNfp
+HKWdIZT61S
+CXYXuKW4m6
+LmxGogwkTy
