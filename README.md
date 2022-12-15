@@ -883,7 +883,7 @@ See [DL_compiler_frontend.md](file://DL_compiler_frontend.md)
 
 		- https://en.wikipedia.org/wiki/Parsing_expression_grammar
 
-## Chapter 6 (Semantic analysis)
+## Chapter 6 (Semantic analysis & Code generation)
 
 ### Semantic analysis
 - Concerned with type checking.
@@ -933,7 +933,7 @@ int arr[3][4];
 
 ![2D array in C](assets/2d_array_C.png)
 
-Any element (e) is accessible via its address:
+Any element (e) is accessible via its memory address:
 
 `addr(e) = (i*4 + j) * size_of_int`
 
@@ -1047,5 +1047,64 @@ z = x * b;
 Example
 ![DL to Three-address IR](assets/DL_to_three-address-IR.png)
 
+### How we translate a tree-based representation to a three-address code
+
+- There's no definitive way to create an IR.
+- An example could be a function, named `cg()` which traverses the tree and generates IR.
+- The decission on what to generated is performed with a lengthy `switch` statement.
+
+Example:
+
+```C
+typedef enum {
+R_REG, R_GLOBAL, R_LOCAL, R_CONST, R_NONE} regtags;
+/* r5, vg5, vl5, 5, nothing returned */
+
+/* Structure returned by the cg function */
+typedef struct regstruct {
+		regtags regtype; /* R_REG, R_GLOBAL, R_LOCAL, R_CONST, R_NONE */
+int regvalue; /* which register or integer value of constant */
+} a3token;
+
+a3token cg(astptr p) {
+		int nodetype;
+		a3token noresult = {R_NONE, -1};
+		astptr left,right;
+		if (p==NULL) return noresult;
+		nodetype = p->asttype;
+		switch (nodetype) {
+				.
+				.
+				.
+				case N_PLUS:
+				case N_MINUS:
+				case N_MUL:
+				case N_DIV:
+						left=p->p1;
+						right=p->p2;
+						t=genreg();
+						t2=cg(left);
+						t3=cg(right);
+						opreg(t); /*  */
+						printf("="); opreg(t2); outop(nodetype); opreg(t3); // CODEGEN
+						printf("\n");
+						return t;
+						/*
+						outop():  Output the arithmetic instruction for the node.
+						opreg():  Outputs an argument for the machine instruction, either a temporary register, a register storing
+								     a variable or an integer constant.
+						genreg(): Returns the identity (as an a3token) of the next unused temporary register.
+					    */
+		}
+}
+```
+
+Example using above code for the expression `1*2+3+4` will generated the following three-address-code.
+
+```C
+r3 = 1 * 2
+r2 = r3 + 3
+r1 = r2 + 4
+```
 
 **!It's important to remember that at this point we're not conserned with optimization. We don't want to get into premature optimization. So, the IR can be as simple as necessary to achieve the goal of translation.**
