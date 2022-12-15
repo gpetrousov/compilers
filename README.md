@@ -1085,7 +1085,7 @@ a3token cg(astptr p) {
 						t=genreg();
 						t2=cg(left);
 						t3=cg(right);
-						opreg(t); /*  */
+						opreg(t);
 						printf("="); opreg(t2); outop(nodetype); opreg(t3); // CODEGEN
 						printf("\n");
 						return t;
@@ -1106,5 +1106,7 @@ r3 = 1 * 2
 r2 = r3 + 3
 r1 = r2 + 4
 ```
+
+So, what this generates is which registers should store which result.
 
 **!It's important to remember that at this point we're not conserned with optimization. We don't want to get into premature optimization. So, the IR can be as simple as necessary to achieve the goal of translation.**
