@@ -1199,3 +1199,38 @@ So, what this generates is which registers should store which result.
 - This is an interpreter.
 - The target language cna be another high level language, like C.
 - The generated laguage is then compiled using an existing compiler, like `gcc`.
+
+### Generating target machine instructions
+
+- "The process of instruction selection forms the core of code generation."
+- There are infinite ways to generate target code.
+- A widely used approach is:
+		- Transform the IR into a tree representation.
+		- Find patters in the tree which can be re-writen into machine code instructions.
+- The proceess of finding these tree patterns is called "tiling".
+- One successful algorithm used for tiling is the `maximal munch` (consume the largest input possible to generate an output).
+
+### `register spilling`
+
+- The hardware registers are being shared and their intermediate values are stored in memory.
+- Should be avoided as much as possible.
+- Is time consuming (load, store, load, store,....).
+
+
+### `Live Rangers`
+
+```txt
+Is the process of finding code blocks in which a single register can be used to carry values for multiple variables without overlapping.
+```
+- Live ranges in straight code are easy to find.
+- Complex control logic make finding live rangers difficult.
+
+Example
+
+```txt
+.
+x = 1;   ⎤
+	.	 ⎥ <= live range 1
+	.	 ⎥
+... = x; ⎦
+```
