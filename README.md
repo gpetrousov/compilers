@@ -1167,3 +1167,35 @@ l2:
 So, what this generates is which registers should store which result.
 
 **!It's important to remember that at this point we're not conserned with optimization. We don't want to get into premature optimization. So, the IR can be as simple as necessary to achieve the goal of translation.**
+
+
+## Chapter 8 (Code Generation)
+
+- Code generation happens with or without prior optimization.
+- No standard way or universal solution for generating code.
+- No formal techniques exists to represent information about the target machine and generate code for it.
+
+### RISC and CISC
+
+- Classification of processors into either reduced instruction set computers (RISC) or complex instruction set computers (CISC).
+- Both types of processor are used today.
+
+#### RISC
+
+- Simple instruction set.
+- Smaller instructions.
+- Each instruction runs fast because smaller commands require less CPU cycles.
+- Uniform instructions.
+
+#### CISC
+
+- Complex instructions.
+- Require more CPU cycles.
+- Complex addressing modes.
+
+### VM interpreter
+
+- Another approach towards code generation is to generate code which can be executed on a VM.
+- This is an interpreter.
+- The target language cna be another high level language, like C.
+- The generated laguage is then compiled using an existing compiler, like `gcc`.
