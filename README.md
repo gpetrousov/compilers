@@ -1095,6 +1095,39 @@ a3token cg(astptr p) {
 								     a variable or an integer constant.
 						genreg(): Returns the identity (as an a3token) of the next unused temporary register.
 					    */
+				case N_IF:
+				case N_IF:
+						l1=genlab();
+						cnode=p->p1; /* point to the cond node */
+						t2=cg(cnode->p1); t3=cg(cnode->p2);
+						printf("if ("); opreg(t2); invcondition(cnode); opreg(t3); // CODEGEN
+						printf(") goto l%d\n",l1); /* jump to else part or end of statement*/
+						t=cg(p->p2); /* cg then part */
+						if (p->p3 != NULL) { /* else present */
+								l2=genlab();
+								printf("goto l%d\n",l2);
+								printf("l%d:\n",l1);
+								t=cg(p->p3); /* cg else part */
+								printf("l%d:\n",l2);
+						}
+						else /* no else present */
+						printf("l%d:\n",l1);
+						return noresult;
+						/*
+						invcondition():  inverts the conditions to make them work with goto expressions
+						*/
+				case N_WHILE:
+						l1=genlab();
+						l2=genlab();
+						cnode=p->p1; /* point to the cond node */
+						t2=cg(cnode->p1); t3=cg(cnode->p2);
+						printf("l%d:\nif (",l1); opreg(t2);
+						invcondition(cnode); opreg(t3);
+						printf(") goto l%d\n",l2); /* jump out of while */
+						t=cg(p->p2); /* cg do part */
+						printf("goto l%d\n",l1);
+						printf("l%d:\n",l2);
+						return noresult;
 		}
 }
 ```
@@ -1105,6 +1138,30 @@ Example using above code for the expression `1*2+3+4` will generated the followi
 r3 = 1 * 2
 r2 = r3 + 3
 r1 = r2 + 4
+```
+
+Example using above code for the expression `if (a+b > a*b) c = 1 else c = 2` will generated the following three-address-code.
+
+```C
+r1 = vg0 + vg1
+r2 = vg0 * vg1
+if (r1<=r2) goto l1
+vg2 = 1
+goto l2
+l1:
+vg2 = 2
+l2:
+```
+
+Example using above code for the expression `while (i<=10) i = i + 1` will generated the following three-address-code.
+
+```C
+l1:
+if (vg0>10) goto l2
+r1 = vg0 + 1
+vg0 = r1
+goto l1
+l2:
 ```
 
 So, what this generates is which registers should store which result.
