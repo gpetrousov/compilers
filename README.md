@@ -1234,3 +1234,9 @@ x = 1;   ⎤
 	.	 ⎥
 ... = x; ⎦
 ```
+
+### Graph coloring
+
+- Algorithm used to find if we can allocate an X amount of physical registes without `spiling`.
+- If that's not possible, we have to have spilling.
+- If we have to have shared registers `spilled`, then, ideally we store infrequently used values in them.
