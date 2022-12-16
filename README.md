@@ -1240,3 +1240,13 @@ x = 1;   ⎤
 - Algorithm used to find if we can allocate an X amount of physical registes without `spiling`.
 - If that's not possible, we have to have spilling.
 - If we have to have shared registers `spilled`, then, ideally we store infrequently used values in them.
+- #WIP (create the graph colouring algorithm in C)
+
+### Practical matters over registers
+
+- Registers are a precious commodity.
+- C's indirection operation can wreak havoc to register allocation.
+		- `int *p; *p=3;`
+		- Where is 'p' pointing to?
+		- If it's pointing to a register, we also need to update that register's value.
+		- If it's pointing to a memory address, we need to update that one as well.
