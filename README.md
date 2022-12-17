@@ -1318,6 +1318,27 @@ These are a subject of their own.
 
 https://docs.python.org/3/reference/grammar.html
 
+## Why Compiler infrastructure is closelyt related with AI and ML?
+
+Machine Learning relies on specific operations (operations on matrixes) which are performed faster on application specific hardware, such as GPUs or TPUs.
+
+Making a higher level programming language (HLPL) work (compiled) on this hardware is a primary concern of compiler infrastructure creation (GCC, CUDA, LLVM,...).
+
+So
+
+```txt
+HLPL => (compiler) => MC => HW
+
+Where
+HLPL     : higher level programming language
+MC       : machine code
+HW 		 : Hardware
+Hardware : GPU | TPU | NPU
+NPU		 : Network Processing Unit
+```
+
+That is why compiler infrastructure creation is so closely correlated with AI.
+
 # Future of developments
 
 - Algorithms which can take advantage of parallelisation are immature.
