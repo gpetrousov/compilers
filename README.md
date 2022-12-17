@@ -1171,6 +1171,8 @@ So, what this generates is which registers should store which result.
 
 ## Chapter 8 (Code Generation)
 
+- If quality code is not required, writing a code generator is fairly easy
+- Target machine processor manuals should be at hand.
 - Code generation happens with or without prior optimization.
 - No standard way or universal solution for generating code.
 - No formal techniques exists to represent information about the target machine and generate code for it.
@@ -1250,3 +1252,23 @@ x = 1;   ⎤
 		- Where is 'p' pointing to?
 		- If it's pointing to a register, we also need to update that register's value.
 		- If it's pointing to a memory address, we need to update that one as well.
+
+
+### Automatic code generation approaches
+
+- It's possible to create a one-off custom generator which does pattern matching against the IR and data structures derived from trees.
+		- Complexity rises from the amount of patterns.
+		- Usually, on-off generators, for a specific architecture, are written.
+- use the peephole optimization on the IR instruction and generate machine code.
+		- Each IR instruction is translated in isolation.
+		- Poor machine code is produced.
+		- Danger that not all input will be matched.
+- Graham-Glanville approach (Use regex on the IR and replace it with machine code).
+		- Use context-free grammars matchers on the IR.
+		- Replace matching text with machine code.
+		- Essentially, it's a parser for the IR.
+- Other systems:
+		1. Dynamic programming
+		2. `twig`
+		3. `BURS` (Bottom-Up Rewrite System)
+		4. `BURG`
