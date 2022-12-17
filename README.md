@@ -1272,3 +1272,40 @@ x = 1;   ⎤
 		2. `twig`
 		3. `BURS` (Bottom-Up Rewrite System)
 		4. `BURG`
+
+---
+
+# Learnings
+
+## How do we target a specific architecture or device with our programming language?
+
+- In high overview,
+		- We need a front-end capable or prducing an IR.
+		- We need a backend capable or consuming the IR.
+		- The backend needs to generate machine code targeting our architecture.
+
+**Example**
+
+GCC has several front-ends: C, C++, Go<br>
+see: https://gcc.gnu.org/frontends.html<br>
+GCC has several target backends: aarch64, i386, arm<br>
+see: https://gcc.gnu.org/backends.html.
+
+**Example**
+Rust uses LLVM for code generation, see https://rustc-dev-guide.rust-lang.org/backend/codegen.html.<br>
+The front-end of Rust produces the LLVM IR which is consumed by LLVM to produce targe machine code.
+
+Particularly, Rust has multiple IRs: https://rustc-dev-guide.rust-lang.org/overview.html#intermediate-representations
+
+ref: https://rustc-dev-guide.rust-lang.org/backend/codegen.html
+
+## What is the LLVM project all about?
+
+Is a reusable compiler backend.<br>
+Takes input in the form of LLVM IR.<br>
+Produces output for a plethora of targets.<br>
+
+## What is clang? https://clang.llvm.org/
+`clang` is a frontend (for the C language family), replacement for `GCC` which uses `LLVM` as its backend.
+
+ref: https://clang.llvm.org/
