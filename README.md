@@ -1309,3 +1309,18 @@ Produces output for a plethora of targets.<br>
 `clang` is a frontend (for the C language family), replacement for `GCC` which uses `LLVM` as its backend.
 
 ref: https://clang.llvm.org/
+
+## What about OO and functional programms?
+
+These are a subject of their own.
+
+## Where can I see the grammar spec for Python?
+
+https://docs.python.org/3/reference/grammar.html
+
+# Future of developments
+
+- Algorithms which can take advantage of parallelisation are immature.
+		- People are very ingrained into thinking sequentially.
+- What about compilers for quantum computers?
+- Can you apply an AI program to generate or parallelise sequential alrorithms?
