@@ -1339,6 +1339,31 @@ NPU		 : Network Processing Unit
 
 That is why compiler infrastructure creation is so closely correlated with AI.
 
+## How to write a compiler in language L which compiles itself and runs on machine M?
+
+- Developing a brand new compiler from scratch, is very tough.
+
+However, if machine M already supports another develompent environment/compiler for another language, C.<br>
+Then, we can write a compiler for L using C tools, like `flex`, `bison`, `GCC`. This compiler will be written in `C`.
+Once we have a compiler for `L` in `C`. We can write a compiler for `L` in `L` using the previously developed compiler in `C`.
+The last compiler, written in `L`, should also be able to compiler itself, essentially making `L` a primary language.
+
+**Testing if a compiler can compile itself is a very strong validity test.**
+
+## What is `dynamic class loading` in `Java`?
+
+The Java programming language is compiled into a specific language which is ran on the JVM.<br>
+The JVM, is a stack-based interpreter which receives Java bytecode and interpretes it to machine code.<br>
+Because JVM reads Java byte code, that means that we can load some Java bytecode from another class on the run.<br>
+That class, can be located locally or on another machine on the internet.<br>
+So, the ability to load a class during runtime into the JVM is what defines `dynamic class loading` in `Java`.
+
+## What is Just in Time `JIT` compilation?
+
+`JIT` is the process of compiling specific pieces of a program into machine code during its execution time.<br>
+The reason to use `JIT` for a specific routine is because that routine might be called several times.<br>
+`JIT` compilation of a routine, should resolve in fast execution times.
+
 # Future of developments
 
 - Algorithms which can take advantage of parallelisation are immature.
