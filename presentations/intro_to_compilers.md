@@ -1,3 +1,5 @@
+This is an outline of a potential presentation I created after having read `A Practical Approach to Compiler Construction - Des Watson`.
+
 # TOC
 
 # 1. What is a compiler? - 5'
@@ -45,7 +47,7 @@ The compiler backend is concerned with the following:
 - How to parallelise instructions to take advantage of multicore systems?
 - How to think in parallel instead of sequentially when designing algorithms?
 
-# 6. How compilers are important in ML? - 5'
+# 6. How compiler development plays a role in ML? - 5'
 ---
 ```txt
 Machine Learning (ML) is a hot topic these days.
