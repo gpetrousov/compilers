@@ -1,3 +1,5 @@
 *.out
 lex.yy.c
 *.swp
+calculator.tab.h
+calculator.tab.c
