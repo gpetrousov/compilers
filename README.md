@@ -125,6 +125,7 @@ Examples: 1+2*3
 | comment          | `(* ... *)`                  |
 | special sequence | `? ... ?`                    |
 | exception        | `-`                          |
+| becomes 		   | `::=`                        |
 
 - Ref: https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form#EBNF
 
@@ -703,7 +704,7 @@ Success!
 - Instead of regexes, it accepts _grammar production rules_.
 - Produces parsers in `C`.
 - Is combined with `flex`:
-		- The generated parser calls functions from the generated lexer.
+		- The generated parser calls functions from the generated lexer/scanner.
 - `yyparse()`: bison generated parser function (just like `yylex()` for `flex`).
 		- return 0 :Successful parse.
 
