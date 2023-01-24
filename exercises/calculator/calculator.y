@@ -8,6 +8,7 @@ int yyerror(const char* s);
 %token NUMBER
 %token ADD SUB MUL DIV ABS
 %token EOL
+%token OP CP
 
 %%
 
@@ -27,11 +28,14 @@ factor: term /*default $$ = $1*/
 
 term: NUMBER /*default $$ = $1*/
 	| ABS term { $$ = $2 >= 0? $2 : - $2; }
+	| OP exp CP { $$ = $2; }
 	;
 %%
 
 int main(int argc, char **argv) {
+	printf("Welcome to calculator!\n");
 	yyparse();
+	printf("Closing now... bye.\n");
 }
 
 int yyerror(const char *s) {

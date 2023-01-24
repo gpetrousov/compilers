@@ -410,8 +410,15 @@ lextokens lex();
 				2. [ab^cd] 		 -> a, b, ^ (character), c or d
 				3. \^ 			 -> ^ character
 				4. Anywhere else -> **start** of string/line.
-- `[ ]`: create a matching list that will match any of the characters in the list, so [abc] == any of a, b, or c
+- `[ ]`: character class which creates a matching list that will match any of the characters in the list, so [abc] == any of a, b, or c
 - `$`: matches only the ending of a line, so `o$` == only words ending in o
+- `{}`: Braces:
+
+		- If braces contain one or two numbers, they indicate minumum and maximum number of times the previous pattern can match.
+				Example : A{1,3} matches one to three occurences of A
+		- If the braces container a name, they refer to a named pattern by that name, see `wc` program.
+- `()`: Groups series of regexes into new regexes.
+		Example: (01) matches exactly 01. a(bc|de) matches abc or ade.
 - `&`: ???
 - Online regex tester: https://regexr.com/
 - Ref: https://users.cs.cf.ac.uk/Dave.Marshall/Internet/NEWS/regexp.html
@@ -759,7 +766,6 @@ int yylex() {
 int ch;
 ch=getchar();
 while (ch==’\n’) ch=getchar();
-5.2 Bottom-Up Parsing 105
 return ch;
 }
 int main()

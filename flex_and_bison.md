@@ -21,3 +21,5 @@ On returns from the scanner. Here, when the `return` is encountered, `yylex()` r
 The symbols `%token` in `bison` are the names of the symbols that are tokens in the parser.
 
 In `bison`'s rules section, each line is a symbol and `$$` is the value of that symbol.
+
+By **default** `token`s in `bison` are defined in `*.tab.h` file and their values start from 258 to avoid collisions.
