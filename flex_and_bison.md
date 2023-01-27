@@ -23,3 +23,8 @@ The symbols `%token` in `bison` are the names of the symbols that are tokens in 
 In `bison`'s rules section, each line is a symbol and `$$` is the value of that symbol.
 
 By **default** `token`s in `bison` are defined in `*.tab.h` file and their values start from 258 to avoid collisions.
+
+It's possible to use `flex` + `bison` for the frontend and use `LLVM` for the backend.
+To achieve that, you need to generate the IR that LLVM accepts.
+To generate the correct IR, you need to create define and create the nodes of the AST and instruct `bison` on how to build it.
+Example: https://github.com/lsegal/my_toy_compiler
