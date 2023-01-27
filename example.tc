@@ -16,7 +16,6 @@ let
 return
 not
 and
-
 or
 start
 
@@ -34,4 +33,46 @@ double_undercore__
 3
 10001
 
-&
+42.0
+0.42
+0.0
+
+"M"
+"aBc"
+"Route 66"
+"Route 0.66"
+"Comma 0,66"
+
+"\n"
+"Hello world!\n"
+"Item:\t\"Laser Printer\"\nPrice:\t$142\n"
+
++
+-
+*
+/
+%
+
+=
+!=
+<
+<=
+
+and
+or
+not
+
+	
+ 
+
+;
+(
+)
+,
+[
+]
+<-
+:
+
+-- Single line comment
+-- :
