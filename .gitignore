@@ -3,3 +3,4 @@ lex.yy.c
 *.swp
 calculator.tab.h
 calculator.tab.c
+teac.yy.c
