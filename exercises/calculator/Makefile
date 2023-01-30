@@ -1,15 +1,12 @@
 all: bison flex
-	gcc -lfl calculator.tab.c lex.yy.c
+	gcc -o calculator calculator_scanner.c calculator_parser.c -lfl
 
 bison:
-	bison -d calculator.y
+	bison -o calculator_parser.c -d calculator.y
 
 flex:
-	flex calculator.l
-
-alt: flex
-	gcc -lfl calculator.tab.c lex.yy.c
+	flex -o calculator_scanner.c calculator.l
 
 clean:
-	rm *.c *.h *.out
-
+	rm *.c *.h
+	rm calculator
