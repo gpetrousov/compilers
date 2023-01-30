@@ -1,0 +1,15 @@
+-- Start and function tc program
+
+const afunction <- () : int => {
+		let x: int;
+		x <- 1 + 2 + 3 + 4;
+		writeInt(4);
+		return 0;
+}
+
+const start <- () : int => {
+		let x: int;
+		x <- 1 + 2 + 3 + 4;
+		writeInt(4);
+		return 0;
+}
