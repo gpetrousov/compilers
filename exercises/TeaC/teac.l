@@ -44,6 +44,7 @@ POOL_KW "pool"
 /* Misc */
 CONST_KW "const"
 START_KW "start"
+ARROW_OP "=>"
 
 /* Assignments */
 LET_KW "let"
@@ -52,7 +53,7 @@ LET_KW "let"
 RETURN_KW "return"
 
 /* Identifiers */
-IDENTIFIERS ([a-z]|[A-Z]){1}[a-zA-Z0-9_]*
+IDENTIFIER ([a-z]|[A-Z]){1}[a-zA-Z0-9_]*
 
 /* Integer positive constants */
 INT_POS_CONST [0-9]+
@@ -73,6 +74,8 @@ OP_SQB "["
 CL_SQB "]"
 ASSIGNMENT "<-"
 COLON ":"
+OP_CURLY_BRACKET "{"
+CL_CURLY_BRACKET "}"
 
 /* Comments */
 SL_COMMENTS [--]([^"\\\n]|\\(.|\n))*[\n]
@@ -108,10 +111,11 @@ WHITESPACE [ \t\n]
 
 {INT_POS_CONST}	{ printf("%d: token(INT_POS_CONST): %d\n", linenum, atoi(yytext)); }
 
-{IDENTIFIERS} 	{ printf("%d: token(IDENTIFIER): %s\n", linenum, yytext); }
+{IDENTIFIER} 	{ printf("%d: token(IDENTIFIER): %s\n", linenum, yytext); }
 
 {CONST_STR}		{ printf("%d: token(CONST_STR): %s\n", linenum, yytext); }
 
+{ARROW_OP}		{ printf("%d: token(ARROW_OP): %s\n", linenum, yytext); }
 {PLUS_OP}		{ printf("%d: token(PLUS_OP): %s\n", linenum, yytext); }
 {MINUS_OP}		{ printf("%d: token(MINUS_OP): %s\n", linenum, yytext); }
 {MUL_OP}		{ printf("%d: token(MUL_OP): %s\n", linenum, yytext); }
@@ -129,8 +133,10 @@ WHITESPACE [ \t\n]
 {COMMA}			{ printf("%d: token(COMMA): %s\n", linenum, yytext); }
 {OP_SQB}		{ printf("%d: token(OP_SQB): %s\n", linenum, yytext); }
 {CL_SQB}		{ printf("%d: token(CL_SQB): %s\n", linenum, yytext); }
-{ASSIGNMENT}			{ printf("%d: token(ASSIGNMENT): %s\n", linenum, yytext); }
+{ASSIGNMENT}	{ printf("%d: token(ASSIGNMENT): %s\n", linenum, yytext); }
 {COLON}			{ printf("%d: token(COLON): %s\n", linenum, yytext); }
+{OP_CURLY_BRACKET}		{ printf("%d: token(OP_CURLY_BRACKET): %s\n", linenum, yytext); }
+{CL_CURLY_BRACKET}		{ printf("%d: token(CL_CURLY_BRACKET): %s\n", linenum, yytext); }
 
 {SL_COMMENTS}	{ printf("%d: token(SL_COMMENTS): %s", linenum, yytext); linenum++; }
 
