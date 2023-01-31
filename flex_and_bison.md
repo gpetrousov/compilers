@@ -28,3 +28,17 @@ It's possible to use `flex` + `bison` for the frontend and use `LLVM` for the ba
 To achieve that, you need to generate the IR that LLVM accepts.
 To generate the correct IR, you need to create define and create the nodes of the AST and instruct `bison` on how to build it.
 Example: https://github.com/lsegal/my_toy_compiler
+
+### Ambiguous patterns in Flex
+
+- if keywords precede patterns, keywords are matched first
+- between keywords, longest ones are preferred
+
+```C
+"+" { return ADD; }
+"=" { return ASSIGN; }
+"+=" { return ASSIGNADD; }
+"if" { return KEYWORDIF; }
+"else" { return KEYWORDELSE; }
+[a-zA-Z_][a-zA-Z0-9_]* { return IDENTIFIER; }
+```
