@@ -3,6 +3,7 @@
 Extend the functionality of the calculator.
 
 - [] add mod operation
+- [] add floating point numbers
 - [] implement signed decimal number handling
 
 ```flex
