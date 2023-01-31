@@ -7,6 +7,7 @@
 /* Declare terminal tokens */
 %token NUMBER
 %token ADD SUB MUL DIV ABS
+%token OP CP
 %token EOL
 
 %start calclist
@@ -39,6 +40,7 @@ term: NUMBER { $$ = $1; }
 			$$ = -$2;
 		}
 	}
+	| OP exp CP	{ printf("OP exp CP: %d\n", $2); $$ = $2; }
 	;
 
 %%
