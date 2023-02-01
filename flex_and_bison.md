@@ -42,3 +42,6 @@ Example: https://github.com/lsegal/my_toy_compiler
 "else" { return KEYWORDELSE; }
 [a-zA-Z_][a-zA-Z0-9_]* { return IDENTIFIER; }
 ```
+
+Symbol tables store information about identifiers that occur in the (source) program. Symbol tables can be implemented using hashtables (dictionaries in Python).
+In case of collisions, chaining is implemented. See, `exercises/c-tutorials/hashtables*.c`.
