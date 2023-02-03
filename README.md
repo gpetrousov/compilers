@@ -577,8 +577,8 @@ A1 → β|γ
 		- Have added complexity.
 
 ### Grammar to parser classification
-- `LL(k)`: Read Left to right, Leftmost derivation, k lookaheads max.
-- `LR(k)`: Read Left to right, Rightmost derivation in reverse, k lookaheads max.
+- `LL(k)`: Read Left to right, Leftmost derivation, k lookaheads max. (Read Top->Down; Perform Leftmost derivation) -- https://en.wikipedia.org/wiki/LL_parser
+- `LR(k)`: Read Left to right, Rightmost derivation in reverse, k lookaheads max. (Read Bottom-Up; Use a stack;) -- https://en.wikipedia.org/wiki/LR_parser
 - Most programming languages: `LL(1)`.
 - `LL(k)` grammars are `LR(k)`
 - `LR(k)`: harder to implement, more powerfull than `LL(k)`
