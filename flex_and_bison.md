@@ -37,6 +37,8 @@ To achieve that, you need to generate the IR that LLVM accepts.
 To generate the correct IR, you need to create define and create the nodes of the AST and instruct `bison` on how to build it.
 Example: https://github.com/lsegal/my_toy_compiler
 
+When defining rules: Small letters for the non-terminals and caps for the terminals.
+
 ## Ambiguous patterns in Flex
 
 - if keywords precede patterns, keywords are matched first
@@ -99,6 +101,23 @@ OR
 - Priority (or precedence) is defined by the order that those semantic rules are placed wth. The priority is increasing downwards. So, from above, `POW` has higher priority than `*` and `/` and those have higher priority than `+` and `-`.
 
 - With `%prec`, we can define precedence and associativity in the rule. See Using Precedence and Associativity to Resolve Conflicts
+
+## The following actions take place on the stack:
+
+```
+shift -> insert the next input element to the stack.
+reduce -> applied to the head of the stack when the right-side of a rule has been found by replacing the right-side with the left-side.
+accept and abort that tell us if the analysis was successful or not (grammar error or not)
+```
+
+## Bison solves conflicts
+
+Bison solves conflicts with the following actions:
+
+		shift/reduce -> use the shift rule
+		reduce/reduce -> use the first reduce rule that was defined
+		With bison -v we can generate a file that describes the conflicts.
+
 
 ---
 
