@@ -20,7 +20,7 @@
 #define BY_REFER 2
 
 /* current scope */
-int cur_scope = 0;
+//int cur_scope = 0;
 
 /* parameter struct */
 typedef struct Param{

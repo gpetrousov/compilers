@@ -5,6 +5,9 @@
 #include <string.h>
 #include "symtab.h"
 
+/* current scope */
+int cur_scope = 0;
+
 void init_hash_table() {
 	int i; 
 	hash_table = malloc(SIZE * sizeof(list_t*));

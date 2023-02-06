@@ -1,21 +1,17 @@
 %option noyywrap
 
-
 %{
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "symtab.c"
+#include "symtab.h"
+#include "parser.tab.h"
 
 extern FILE *yyin;
 extern FILE *yyout;
 
 int lineno = 1;
-
-void ret_print(char *token_type);
-
 void yyerror();
-
 %}
 
 /* Define an exclusive state */
@@ -43,50 +39,51 @@ STRING      \"{print}*\"
 <ML_COMMENT>"*"			
 <ML_COMMENT>"\n"	{ lineno += 1; }
 
-"char"|"CHAR"          { ret_print("KEYWORD_CHAR"); }
-"int"|"INT"            { ret_print("KEYWORD_INT"); }
-"float"|"FLOAT"        { ret_print("KEYWORD_FLOAT"); }
-"double"|"DOUBLE"      { ret_print("KEYWORD_DOUBLE"); }
-"if"|"IF"              { ret_print("KEYWORD_IF"); }
-"else"|"ELSE"          { ret_print("KEYWORD_ELSE"); }
-"while"|"WHILE"	       { ret_print("KEYWORD_WHILE"); }
-"for"|"FOR"	       { ret_print("KEYWORD_FOR"); }
-"continue"|"CONTINUE"  { ret_print("KEYWORD_CONTINUE"); }
-"break"|"BREAK"	       { ret_print("KEYWORD_BREAK"); }
-"void"|"VOID"	       { ret_print("KEYWORD_VOID"); }
-"return"|"RETURN"      { ret_print("KEYWORD_RETURN"); }
+"char"|"CHAR"          { return  CHAR; }
+"int"|"INT"            { return  INT; }
+"float"|"FLOAT"        { return  FLOAT; }
+"double"|"DOUBLE"      { return  DOUBLE; }
+"if"|"IF"              { return  IF; }
+"else"|"ELSE"          { return  ELSE; }
+"while"|"WHILE"	       { return  WHILE; }
+"for"|"FOR"			   { return FOR ; }
+"continue"|"CONTINUE"  { return CONTINUE; }
+"break"|"BREAK"	       { return BREAK; }
+"void"|"VOID"	       { return VOID; }
+"return"|"RETURN"      { return RETURN; }
 
-"+"|"-"      { ret_print("ADDOP"); }
-"*"	     { ret_print("MULOP"); }
-"/"	     { ret_print("DIVOP"); }
-"++"|"--"    { ret_print("INCR"); }
-"||"         { ret_print("OROP"); }
-"&&"	     { ret_print("ANDOP"); }
-"!"	     { ret_print("NOTOP"); }
-"=="|"!="    { ret_print("EQUOP"); }
-">"|"<"|">="|"<="      { ret_print("RELOP"); }
+"+"|"-"					{ return ADDOP; }
+"*"	     				{ return MULOP; }
+"/"	     				{ return DIVOP; }
+"++"|"--"   			{ return INCR; }
+"||"        			{ return OROP; }
+"&&"	    			{ return ANDOP; }
+"!"	     				{ return NOTOP; }
+"=="|"!="   			{ return EQUOP; }
+">"|"<"|">="|"<="      	{ return RELOP; }
 
-"("      { ret_print("LPAREN"); }
-")"      { ret_print("RPAREN"); }
-"]"      { ret_print("LBRACK"); }
-"["      { ret_print("RBRACK"); }
-"{"      { ret_print("LBRACE"); }
-"}"      { ret_print("RBRACE"); }
-";"      { ret_print("SEMI"); }
-"."      { ret_print("DOT"); }
-","      { ret_print("COMMA"); }
-"="      { ret_print("ASSIGN"); }
-"&"      { ret_print("REFER"); }
+"("      { return LPAREN; }
+")"      { return RPAREN; }
+"]"      { return LBRACK; }
+"["      { return RBRACK; }
+"{"      { return LBRACE; }
+"}"      { return RBRACE; }
+";"      { return SEMI; }
+"."      { return DOT;}
+","      { return COMMA; }
+"="      { return ASSIGN; }
+"&"      { return REFER; }
 
 {ID} { 
 		// Insert identifier into symbol table
 		insert(yytext, strlen(yytext), UNDEF, lineno);
-		ret_print("ID");
+		return ID;
 	}
-{ICONST}     { ret_print("ICONST"); }
-{FCONST}     { ret_print("FCONST"); }
-{CCONST}     { ret_print("CCONST"); }
-{STRING}     { ret_print("STRING"); }
+
+{ICONST}     { return ICONST; }
+{FCONST}     { return FCONST; }
+{CCONST}     { return CCONST; }
+{STRING}     { return STRING; }
 
 
 "\n"		   { lineno += 1; }
@@ -95,28 +92,3 @@ STRING      \"{print}*\"
 .		   { yyerror("Unrecognized character"); }
 
 %%
-
-void ret_print(char *token_type) {
-   printf("yytext: %s\ttoken: %s\tlineno: %d\n", yytext, token_type, lineno);
-}
-
-void yyerror(char *message){
-   printf("Error: \"%s\" in line %d. Token = %s\n", message, lineno, yytext);
-   exit(1);
-}
-
-int main(int argc, char *argv[]){
-	// Init symbol table.
-	init_hash_table();
-
-	yyin = fopen(argv[1], "r");
-	yylex();
-	fclose(yyin);
-
-	// Save symbol table to file.
-	yyout = fopen("symtab.out", "w");
-	symtab_dump(yyout);
-	fclose(yyout);
-
-	return 0;
-}

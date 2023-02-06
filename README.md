@@ -590,7 +590,7 @@ A1 → β|γ
 Example
 ![Rightmost derivation in reverse](assets/rightmost_derivation_reverse.png)
 - Standardized algorithms exist.
-- SOme lookahead is necessary.
+- Some lookahead is necessary.
 - `The handle`:
 		- The substring match with the production on the right hand side.
 		- Key problem in bottom-up parsing, identification of the handle.

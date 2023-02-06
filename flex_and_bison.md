@@ -1,5 +1,4 @@
 # Flex and Bison
-
 Most of these notes were taken by reading the book Flex and Bison by John Levine. All the sources are mentioned in the References section.
 
 ---
@@ -17,6 +16,8 @@ alt: flex
 ```
 
 The `syntax analyser` calls the `scanner` to get the next token. So, there's a continuous communication between the two.
+
+`tokens` are the symbols that we want the lexer to return to the parser.
 
 On returns from the scanner. Here, when the `return` is encountered, `yylex()` returns immediately. When there's no `return`, scannign resumes immediately.
 
@@ -118,6 +119,31 @@ Bison solves conflicts with the following actions:
 		reduce/reduce -> use the first reduce rule that was defined
 		With bison -v we can generate a file that describes the conflicts.
 
+## From regex to CFG in Bison
+
+`?`: 
+	- (option 1): create 2 rules one that container the part and one that does not.
+	- (option 2): define new rule that will be of the form "something | nothing".
+
+`*` and `+`: create left-recursive rules
+
+`Example`
+
+```
+variable: ID |
+    ('*')+ID |
+    ID('['ICONST']')+
+;
+
+# becomes
+
+variable: ID |
+    pointer ID |
+    ID array
+;
+pointer: pointer '*' | '*' ;
+array: array '[' ICONST ']' | '[' ICONST ']' ;
+```
 
 ---
 
