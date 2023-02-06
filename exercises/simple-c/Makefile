@@ -2,15 +2,15 @@ flex:
 	flex -o lexer.c lexer.l
 
 bison:
-	bison -d parser.y
+	bison -o parser.c -d parser.y
 
 sc:
-	gcc -o sc lexer.c parser.tab.c
+	gcc -o sc lexer.c parser.c
 
 all: bison flex sc
 
 clean:
-	rm parser.tab.h
-	rm parser.tab.c
-	rm lexer.c
-	rm sc
+	-rm parser.c
+	-rm parser.h
+	-rm lexer.c
+	-rm sc

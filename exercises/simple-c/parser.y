@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "symtab.c"
+
 extern FILE *yyin;
 extern FILE *yyout;
 extern int lineno; 

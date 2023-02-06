@@ -2,10 +2,9 @@
 
 %{
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include "symtab.h"
-#include "parser.tab.h"
+#include "parser.h"
 
 extern FILE *yyin;
 extern FILE *yyout;
@@ -20,6 +19,8 @@ void yyerror();
 alpha      [a-zA-Z]
 digit      [0-9]
 alnum      {alpha}|{digit}
+
+/* Any printable character */
 print      [ -~]
 
 /* Terminal tokens */

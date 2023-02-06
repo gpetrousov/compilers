@@ -19,9 +19,6 @@
 #define BY_VALUE 1
 #define BY_REFER 2
 
-/* current scope */
-//int cur_scope = 0;
-
 /* parameter struct */
 typedef struct Param{
 	int par_type;
