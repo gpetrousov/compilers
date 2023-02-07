@@ -42,7 +42,7 @@ The symbols we want the lexer to return to the parser.
 
 program: declarations statements;
 
-declarations: declaration declarations | declaration;
+declarations: declarations declaration | declaration;
 declaration: type names SEMI;
 type: INT | CHAR | FLOAT | DOUBLE | VOID;
 names: variable | names COMMA variable;
