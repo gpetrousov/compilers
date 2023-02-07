@@ -65,8 +65,8 @@ STRING      \"{print}*\"
 
 "("      { return LPAREN; }
 ")"      { return RPAREN; }
-"]"      { return LBRACK; }
-"["      { return RBRACK; }
+"["      { return LBRACK; }
+"]"      { return RBRACK; }
 "{"      { return LBRACE; }
 "}"      { return RBRACE; }
 ";"      { return SEMI; }
@@ -81,10 +81,10 @@ STRING      \"{print}*\"
 		return ID;
 	}
 
-{ICONST}     { return ICONST; }
-{FCONST}     { return FCONST; }
-{CCONST}     { return CCONST; }
-{STRING}     { return STRING; }
+{ICONST}     { yylval.int_val = atoi(yytext); return ICONST; }
+{FCONST}     { yylval.double_val = atof(yytext); return FCONST; }
+{CCONST}     { yylval.char_val = yytext[0]; return CCONST; }
+{STRING}     { yylval.str_val = malloc(yyleng * sizeof(char)); strcpy(yylval.str_val, yytext); return STRING; }
 
 
 "\n"		   { lineno += 1; }

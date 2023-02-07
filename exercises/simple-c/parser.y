@@ -11,13 +11,26 @@ extern int yylex();
 extern void yyerror(); 
 %}
 
+/* YYSTYPE union */
+%union {
+    char char_val;
+    int int_val;
+	double double_val;
+	char *str_val;
+	list_t *symtab_item;
+}
+
 /* Token Definition
 The symbols we want the lexer to return to the parser.
 */
-%token CHAR INT FLOAT DOUBLE IF ELSE WHILE FOR CONTINUE BREAK VOID RETURN
-%token ADDOP MULOP DIVOP INCR OROP ANDOP NOTOP EQUOP RELOP
-%token LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE SEMI DOT COMMA ASSIGN REFER
-%token ID ICONST FCONST CCONST STRING
+%token<int_val> CHAR INT FLOAT DOUBLE IF ELSE WHILE FOR CONTINUE BREAK VOID RETURN
+%token<int_val> ADDOP MULOP DIVOP INCR OROP ANDOP NOTOP EQUOP RELOP
+%token<int_val> LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE SEMI DOT COMMA ASSIGN REFER
+%token<symtab_item> ID
+%token<int_val> ICONST
+%token<double_val> FCONST
+%token<char_val> CCONST
+%token<str_val> STRING
 
 /* Define the startinb symbol. */
 %start program
@@ -30,7 +43,7 @@ The symbols we want the lexer to return to the parser.
 program: declarations statements;
 
 declarations: declaration declarations | declaration;
-declaration: type names SEMI
+declaration: type names SEMI;
 type: INT | CHAR | FLOAT | DOUBLE | VOID;
 names: variable | names COMMA variable;
 
@@ -38,8 +51,8 @@ variable: ID
 		| pointer ID
 		| ID array
 		;
-pointer: pointer MULOP | MULOP ;
-array: array "[ICONST]"| "[ICONST]" ;
+pointer: pointer MULOP | MULOP;
+array: array LBRACK ICONST RBRACK| LBRACK ICONST RBRACK;
 
 statements: statements statement | statement;
 statement: if_statement | for_statement | while_statement | assignment
@@ -83,10 +96,13 @@ expression ADDOP expression
 
 sign: ADDOP | /* empty */ ;
 
-constant: ICONST | FCONST | CCONST ; 
-assignment: reference variable ASSIGN expression SEMI ;
+constant: ICONST { printf("%d\n", yylval.int_val); }
+		| FCONST { printf("%.2f\n", yylval.double_val); }
+		| CCONST
+		; 
+assignment: reference variable ASSIGN expression SEMI;
 
-reference: REFER | /* empty */
+reference: REFER | /* empty */ ;
 
 %%
 
@@ -101,7 +117,7 @@ int main(int argc, char *argv[]) {
 
 	// parsing
     int flag;
-	yyin = fopen("argv[1]", "r");
+	yyin = fopen(argv[1], "r");
 	flag = yyparse();
 	fclose(yyin);
 
