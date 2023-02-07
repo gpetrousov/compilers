@@ -40,7 +40,7 @@ The symbols we want the lexer to return to the parser.
 
 %%
 
-program: declarations statements functions;
+program: declarations statements RETURN SEMI functions;
 
 functions: functions function | function;
 function: function_head function_tail | /* empty */;
@@ -69,11 +69,12 @@ variable: ID
 		| ID array
 		;
 pointer: pointer MULOP | MULOP;
-array: array LBRACK ICONST RBRACK| LBRACK ICONST RBRACK;
+
+array: array LBRACK expression RBRACK | LBRACK ICONST RBRACK;
 
 statements: statements statement | statement;
 statement: if_statement | for_statement | while_statement | assignment |
-		 CONTINUE SEMI | BREAK SEMI | RETURN SEMI | function_call SEMI
+		 CONTINUE SEMI | BREAK SEMI | function_call SEMI
 		 ;
 
 if_statement: 
@@ -91,9 +92,9 @@ else_part:
 		 | /* empty */
 		 ;
  
-for_statement: FOR LPAREN expression SEMI expression SEMI expression RPAREN tail;
+for_statement: FOR LPAREN assignment expression SEMI expression SEMI expression RPAREN tail;
 while_statement: WHILE LPAREN expression RPAREN tail;
-tail: statement SEMI |  LBRACE statements RBRACE;
+tail: LBRACE statements RBRACE;
 
 expression:
 expression ADDOP expression
