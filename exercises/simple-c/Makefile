@@ -6,6 +6,9 @@ bison:
 
 sc:
 	gcc -o sc lexer.c parser.c
+	-rm parser.c
+	-rm parser.h
+	-rm lexer.c
 
 all: bison flex sc
 
