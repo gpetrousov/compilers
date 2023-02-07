@@ -40,7 +40,20 @@ The symbols we want the lexer to return to the parser.
 
 %%
 
-program: declarations statements;
+program: declarations statements functions;
+
+functions: functions function | function;
+function: function_head function_tail | /* empty */;
+function_head: return_type ID LPAREN param_empty RPAREN;
+function_tail: LBRACE declarations statements RBRACE;
+param_empty: parameters | /* empty */;
+parameters: parameters COMMA parameter | parameter | /* empty */;
+parameter: type variable;
+return_type: pointer type | type;
+
+function_call: ID LPAREN call_params RPAREN;
+call_params: call_param | STRING | /* empty */;
+call_param: call_param COMMA variable | variable;
 
 declarations: declarations declaration | declaration;
 declaration: type names SEMI;
@@ -56,7 +69,7 @@ array: array LBRACK ICONST RBRACK| LBRACK ICONST RBRACK;
 
 statements: statements statement | statement;
 statement: if_statement | for_statement | while_statement | assignment |
-		 CONTINUE SEMI | BREAK SEMI | RETURN SEMI
+		 CONTINUE SEMI | BREAK SEMI | RETURN SEMI | function_call SEMI
 		 ;
 
 if_statement: 
@@ -92,6 +105,7 @@ expression ADDOP expression
 | LPAREN expression RPAREN
 | variable
 | sign constant
+| function_call
 ;
 
 sign: ADDOP | /* empty */ ;
