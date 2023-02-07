@@ -36,6 +36,16 @@ The symbols we want the lexer to return to the parser.
 %start program
 
 /* expression priorities and rules */
+%left LPAREN RPAREN LBRACK RBRACK
+%right NOTOP INCR REFER
+%left MULOP DIVOP
+%left ADDOP
+%left RELOP
+%left EQUOP
+%left OROP
+%left ANDOP
+%right ASSIGN
+%left COMMA
 
 
 %%
