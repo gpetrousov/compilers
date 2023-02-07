@@ -112,6 +112,8 @@ void yyerror() {
 }
 
 int main(int argc, char *argv[]) {
+
+    printf("\n=== Parser starts ===\n");
 	// Init symbol table.
 	init_hash_table();
 
@@ -125,6 +127,8 @@ int main(int argc, char *argv[]) {
 	yyout = fopen("symtab.out", "w");
 	symtab_dump(yyout);
 	fclose(yyout);
+
+    printf("=== Parser ends ===\n");
 
 	return flag;
 }
