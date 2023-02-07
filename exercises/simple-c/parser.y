@@ -55,7 +55,7 @@ pointer: pointer MULOP | MULOP;
 array: array LBRACK ICONST RBRACK| LBRACK ICONST RBRACK;
 
 statements: statements statement | statement;
-statement: if_statement | for_statement | while_statement | assignment
+statement: if_statement | for_statement | while_statement | assignment |
 		 CONTINUE SEMI | BREAK SEMI | RETURN SEMI
 		 ;
 
@@ -100,7 +100,7 @@ constant: ICONST { printf("%d\n", yylval.int_val); }
 		| FCONST { printf("%.2f\n", yylval.double_val); }
 		| CCONST
 		; 
-assignment: reference variable ASSIGN expression SEMI;
+assignment: reference variable ASSIGN expression SEMI ;
 
 reference: REFER | /* empty */ ;
 
