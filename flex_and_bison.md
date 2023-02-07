@@ -101,7 +101,7 @@ OR
 
 - Priority (or precedence) is defined by the order that those semantic rules are placed wth. The priority is increasing downwards. So, from above, `POW` has higher priority than `*` and `/` and those have higher priority than `+` and `-`.
 
-- With `%prec`, we can define precedence and associativity in the rule. See Using Precedence and Associativity to Resolve Conflicts
+- With `%prec`, we can define precedence and associativity in the rule. See Using Precedence and Associativity to Resolve Conflicts.
 
 ## The following actions take place on the stack:
 
@@ -144,6 +144,51 @@ variable: ID |
 pointer: pointer '*' | '*' ;
 array: array '[' ICONST ']' | '[' ICONST ']' ;
 ```
+
+## Defining token and rule types
+
+Each token, returned from the lexer, can be only of one type, so we specify which type each token and each rule uses.
+
+```
+// Setting types for tokens
+%token <type> token_name
+
+// Setting types for rules
+%type <type> rule_name
+```
+
+We specify the types with a `%union`.
+
+```
+%union
+{
+    char char_val;
+	int int_val;
+	double double_val;
+    char* str_val;
+	list_t* symtab_item; // This is the symbolic table item
+}
+
+// We define tokens as follows.
+%token<int_val> CHAR INT FLOAT DOUBLE IF ELSE WHILE FOR CONTINUE BREAK VOID RETURN
+...
+%token<int_val> LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE SEMI DOT COMMA ASSIGN REFER
+%token <symtab_item> ID // An identifier is part of the symbol table.
+...
+%token <str_val>     STRING
+```
+
+All tokens need to have a specific type
+
+Once we create the `%union`, we can set the various member of the variable `yylval`. So, using the union from above, we can set
+
+```
+yylval.char_val = yytext[0];
+```
+
+from the lexer.
+
+**Ref:** https://steemit.com/utopian-io/@drifter1/writing-a-simple-compiler-on-my-own-passing-information-from-lexer-to-parser
 
 ---
 
