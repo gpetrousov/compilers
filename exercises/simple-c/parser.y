@@ -58,7 +58,11 @@ call_param: call_param COMMA variable | variable;
 declarations: declarations declaration | declaration;
 declaration: type names SEMI;
 type: INT | CHAR | FLOAT | DOUBLE | VOID;
-names: variable | names COMMA variable;
+names: variable init | names COMMA variable init;
+init: ASSIGN init_value | /* empty */;
+init_value: constant | array_init;
+array_init: LBRACE values RBRACE;
+values: values COMMA constant | constant;
 
 variable: ID
 		| pointer ID
