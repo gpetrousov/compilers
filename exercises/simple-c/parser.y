@@ -70,7 +70,7 @@ variable: ID
 		| ID array
 		;
 pointer: pointer MULOP | MULOP;
-array: array LBRACK expression RBRACK | LBRACK ICONST RBRACK;
+array: array LBRACK expression RBRACK | LBRACK expression RBRACK;
 
 
 /***** Statements *****/
