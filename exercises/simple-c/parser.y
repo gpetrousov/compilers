@@ -114,6 +114,9 @@ expression ADDOP expression
 ;
 
 sign: ADDOP | /* empty */ ;
+function_call: ID LPAREN call_params RPAREN;
+call_params: call_param | STRING | /* empty */;
+call_param: call_param COMMA expression | expression;
 
 
 /***** Functions *****/
@@ -125,10 +128,6 @@ param_empty: parameters | /* empty */;
 parameters: parameters COMMA parameter | parameter | /* empty */;
 parameter: type variable;
 return_type: pointer type | type;
-
-function_call: ID LPAREN call_params RPAREN;
-call_params: call_param | STRING | /* empty */;
-call_param: call_param COMMA variable | variable;
 
 
 pointer: pointer MULOP | MULOP;
