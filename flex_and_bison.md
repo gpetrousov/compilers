@@ -77,6 +77,7 @@ In case of collisions, chaining is implemented. See, `exercises/c-tutorials/hash
 
 - A token is defined using `%token` in the definitions section.
 - With `%start` we define the starting symbol.
+- Avoid empty rules as much as possible.
 
 ## Precedence and Associativity (to resolve conflicts)
 
