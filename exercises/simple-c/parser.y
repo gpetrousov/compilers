@@ -53,6 +53,7 @@ The symbols we want the lexer to return to the parser.
 program: declarations statements RETURN SEMI functions_optional ;
 
 
+/***** Declarations or Initializations *****/
 declarations: declarations declaration | declaration;
 declaration: type names SEMI;
 type: INT | CHAR | FLOAT | DOUBLE | VOID;
@@ -69,8 +70,53 @@ variable: ID
 		| pointer ID
 		| ID array
 		;
+array: array LBRACK expression RBRACK | LBRACK ICONST RBRACK;
 
 
+/***** Statements *****/
+statements: statements statement | statement;
+statement: if_statement | for_statement | while_statement | assignment SEMI |
+		 CONTINUE SEMI | BREAK SEMI | function_call SEMI | ID INCR SEMI | INCR ID SEMI
+		 ;
+if_statement:
+			IF LPAREN expression RPAREN tail else_if optional_else
+			| IF LPAREN expression RPAREN tail optional_else
+			;
+else_if:
+	   else_if ELSE IF LPAREN expression RPAREN tail
+	   | ELSE IF LPAREN expression RPAREN tail
+	   ;
+optional_else:
+			 ELSE tail
+			 | /* empty */
+			 ;
+for_statement: FOR LPAREN assignment SEMI expression SEMI expression SEMI expression RPAREN tail;
+while_statement: WHILE LPAREN expression RPAREN tail;
+tail: LBRACE statements RBRACE;
+assignment: var_ref ASSIGN expression ;
+var_ref: variable | REFER variable ;
+
+expression:
+expression ADDOP expression
+| expression MULOP expression
+| expression DIVOP expression
+| ID INCR
+| INCR ID
+| expression OROP expression
+| expression ANDOP expression
+| NOTOP expression
+| expression EQUOP expression
+| expression RELOP expression
+| LPAREN expression RPAREN
+| var_ref
+| sign constant
+| function_call
+;
+
+sign: ADDOP | /* empty */ ;
+
+
+/***** Functions *****/
 functions: functions function | function;
 function: function_head function_tail | /* empty */;
 function_head: return_type ID LPAREN param_empty RPAREN;
@@ -87,54 +133,8 @@ call_param: call_param COMMA variable | variable;
 
 pointer: pointer MULOP | MULOP;
 
-array: array LBRACK expression RBRACK | LBRACK ICONST RBRACK;
 
-statements: statements statement | statement;
-statement: if_statement | for_statement | while_statement | assignment |
-		 CONTINUE SEMI | BREAK SEMI | function_call SEMI
-		 ;
 
-if_statement: 
-			IF LPAREN expression RPAREN tail
-			else_if_part
-			else_part
-			;
-else_if_part:
-			else_if_part ELSE IF LPAREN expression RPAREN tail
-			| ELSE IF LPAREN expression RPAREN tail
-			| /* empty */
-			;
-else_part:
-		 ELSE tail
-		 | /* empty */
-		 ;
- 
-for_statement: FOR LPAREN assignment expression SEMI expression SEMI expression RPAREN tail;
-while_statement: WHILE LPAREN expression RPAREN tail;
-tail: LBRACE statements RBRACE;
-
-expression:
-expression ADDOP expression
-| expression MULOP expression
-| expression DIVOP expression
-| expression INCR
-| INCR expression
-| expression OROP expression
-| expression ANDOP expression
-| NOTOP expression
-| expression EQUOP expression
-| expression RELOP expression
-| LPAREN expression RPAREN
-| variable
-| sign constant
-| function_call
-;
-
-sign: ADDOP | /* empty */ ;
-
-assignment: reference variable ASSIGN expression SEMI ;
-
-reference: REFER | /* empty */ ;
 
 %%
 
