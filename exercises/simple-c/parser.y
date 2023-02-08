@@ -32,9 +32,6 @@ The symbols we want the lexer to return to the parser.
 %token<char_val> CCONST
 %token<str_val> STRING
 
-/* Define the startinb symbol. */
-%start program
-
 /* expression priorities and rules */
 %left LPAREN RPAREN LBRACK RBRACK
 %right NOTOP INCR REFER
@@ -47,6 +44,8 @@ The symbols we want the lexer to return to the parser.
 %right ASSIGN
 %left COMMA
 
+/* Define the startinb symbol. */
+%start program
 
 %%
 
@@ -70,11 +69,12 @@ variable: ID
 		| pointer ID
 		| ID array
 		;
+pointer: pointer MULOP | MULOP;
 array: array LBRACK expression RBRACK | LBRACK ICONST RBRACK;
 
 
 /***** Statements *****/
-statements: statements statement | statement;
+statements: statements statement | statement ;
 statement: if_statement | for_statement | while_statement | assignment SEMI |
 		 CONTINUE SEMI | BREAK SEMI | function_call SEMI | ID INCR SEMI | INCR ID SEMI
 		 ;
@@ -90,7 +90,7 @@ optional_else:
 			 ELSE tail
 			 | /* empty */
 			 ;
-for_statement: FOR LPAREN assignment SEMI expression SEMI expression SEMI expression RPAREN tail;
+for_statement: FOR LPAREN assignment SEMI expression SEMI expression RPAREN tail;
 while_statement: WHILE LPAREN expression RPAREN tail;
 tail: LBRACE statements RBRACE;
 assignment: var_ref ASSIGN expression ;
@@ -114,25 +114,26 @@ expression ADDOP expression
 ;
 
 sign: ADDOP | /* empty */ ;
-function_call: ID LPAREN call_params RPAREN;
-call_params: call_param | STRING | /* empty */;
-call_param: call_param COMMA expression | expression;
+function_call: ID LPAREN call_params RPAREN ;
+call_params: call_param | STRING | /* empty */ ;
+call_param: call_param COMMA expression | expression ;
 
 
 /***** Functions *****/
-functions: functions function | function;
-function: function_head function_tail | /* empty */;
-function_head: return_type ID LPAREN param_empty RPAREN;
-function_tail: LBRACE declarations statements RBRACE;
-param_empty: parameters | /* empty */;
-parameters: parameters COMMA parameter | parameter | /* empty */;
-parameter: type variable;
-return_type: pointer type | type;
+functions_optional: functions | /* empty */ ;
+functions: functions function | function ;
+function: function_head function_tail ;
 
+function_head: return_type ID LPAREN parameters_optional RPAREN ;
+return_type: type | pointer type ;
+parameters_optional: parameters | /* empty */ ;
+parameters: parameters COMMA parameter | parameter ;
+parameter: type variable ;
 
-pointer: pointer MULOP | MULOP;
-
-
+function_tail: LBRACE declarations_optional statements_optional return_optional RBRACE;
+declarations_optional: declarations | /* empty */ ;
+statements_optional: statements | /* empty */ ;
+return_optional: RETURN expression SEMI | /* empty */ ;
 
 
 %%
