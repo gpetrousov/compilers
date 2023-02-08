@@ -50,7 +50,26 @@ The symbols we want the lexer to return to the parser.
 
 %%
 
-program: declarations statements RETURN SEMI functions;
+program: declarations statements RETURN SEMI functions_optional ;
+
+
+declarations: declarations declaration | declaration;
+declaration: type names SEMI;
+type: INT | CHAR | FLOAT | DOUBLE | VOID;
+names: names COMMA variable | names COMMA init | variable | init ;
+init: var_init | array_init ;
+var_init: ID ASSIGN constant ;
+array_init: ID array ASSIGN LBRACE values RBRACE ;
+values: values COMMA constant | constant;
+constant: ICONST { printf("%d\n", yylval.int_val); }
+		| FCONST { printf("%.2f\n", yylval.double_val); }
+		| CCONST
+		; 
+variable: ID
+		| pointer ID
+		| ID array
+		;
+
 
 functions: functions function | function;
 function: function_head function_tail | /* empty */;
@@ -65,19 +84,7 @@ function_call: ID LPAREN call_params RPAREN;
 call_params: call_param | STRING | /* empty */;
 call_param: call_param COMMA variable | variable;
 
-declarations: declarations declaration | declaration;
-declaration: type names SEMI;
-type: INT | CHAR | FLOAT | DOUBLE | VOID;
-names: variable init | names COMMA variable init;
-init: ASSIGN init_value | /* empty */;
-init_value: constant | array_init;
-array_init: LBRACE values RBRACE;
-values: values COMMA constant | constant;
 
-variable: ID
-		| pointer ID
-		| ID array
-		;
 pointer: pointer MULOP | MULOP;
 
 array: array LBRACK expression RBRACK | LBRACK ICONST RBRACK;
@@ -125,10 +132,6 @@ expression ADDOP expression
 
 sign: ADDOP | /* empty */ ;
 
-constant: ICONST { printf("%d\n", yylval.int_val); }
-		| FCONST { printf("%.2f\n", yylval.double_val); }
-		| CCONST
-		; 
 assignment: reference variable ASSIGN expression SEMI ;
 
 reference: REFER | /* empty */ ;
