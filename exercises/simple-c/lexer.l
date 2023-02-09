@@ -1,4 +1,4 @@
-%option noyywrap
+%option noyywrap yylineno
 
 %{
 #include <stdio.h>
@@ -9,7 +9,6 @@
 extern FILE *yyin;
 extern FILE *yyout;
 
-int lineno = 1;
 void yyerror();
 %}
 
@@ -32,13 +31,13 @@ STRING      \"{print}*\"
 
 %%
 
-"//".*		{ printf("Eat up comment at line %d\n", lineno); } 
+"//".*		{ printf("Eat up comment at line %d\n", yylineno); } 
 
-"/*"		{ printf("Eat up comment from line %d ", lineno); BEGIN(ML_COMMENT); }
-<ML_COMMENT>"*/" 	{ printf("to line %d\n", lineno); BEGIN(INITIAL); }
+"/*"		{ printf("Eat up comment from line %d ", yylineno); BEGIN(ML_COMMENT); }
+<ML_COMMENT>"*/" 	{ printf("to line %d\n", yylineno); BEGIN(INITIAL); }
 <ML_COMMENT>[^*\n]+		
 <ML_COMMENT>"*"			
-<ML_COMMENT>"\n"	{ lineno += 1; }
+<ML_COMMENT>"\n"
 
 "char"|"CHAR"          { return  CHAR; }
 "int"|"INT"            { return  INT; }
@@ -77,7 +76,7 @@ STRING      \"{print}*\"
 
 {ID} { 
 		// Insert identifier into symbol table
-		insert(yytext, strlen(yytext), UNDEF, lineno);
+		insert(yytext, strlen(yytext), UNDEF, yylineno);
 		return ID;
 	}
 
@@ -87,7 +86,7 @@ STRING      \"{print}*\"
 {STRING}     { yylval.str_val = malloc(yyleng * sizeof(char)); strcpy(yylval.str_val, yytext); return STRING; }
 
 
-"\n"		   { lineno += 1; }
+"\n"
 [ \t\r\f]+	   /* eat up whitespace */
 
 .		   { yyerror("Unrecognized character"); }

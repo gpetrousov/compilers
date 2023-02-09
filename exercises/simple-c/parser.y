@@ -6,7 +6,7 @@
 
 extern FILE *yyin;
 extern FILE *yyout;
-extern int lineno; 
+extern int yylineno; 
 extern int yylex(); 
 extern void yyerror(); 
 %}
@@ -139,11 +139,14 @@ return_optional: RETURN expression SEMI | /* empty */ ;
 %%
 
 void yyerror() {
-    fprintf(stderr, "Syntax error at line %d\n", lineno);
+    fprintf(stderr, "Syntax error at line %d\n", yylineno);
 	exit(1);
 }
 
 int main(int argc, char *argv[]) {
+
+	// Initialize the line number
+	yylineno = 1;
 
     printf("\n=== Parser starts ===\n");
 	// Init symbol table.
