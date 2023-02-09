@@ -950,6 +950,34 @@ Any element (e) is accessible via its memory address:
 - Describes the types of the nodes (**semantic information**) in the AST (Abstract Syntax Tree).
 - Semantic informaiton is stored in attributes associated with terminal and non-terminal symbols.
 
+**What is attribute grammar and how you get it?**
+
+Trying to make a Context Sensitive Grammar (CSG) compiler would be a difficult process.
+Instead, we use a different approach to add more information to the parser tree.
+To provide additional information about the nodes in the parse tree, we add additional information (or attributes) about those nodes (which contain, terminal or non-terminal tokens).
+This extension, with additional attributes, complements our CFG and turns it into an Attribute Grammar.
+
+Such a grammar is a special form of CFG, where additional information, in form of attributes, is appended to one or more of the terminal and non-terminal symbols, thus providing semantics to a CFG.
+
+#### Attributes
+
+The attributes are divided into 2 categories:
+
+1) Synthesized attributes
+
+The ones that get their values only from the attribute values of their child nodes.
+Synthesized attributes can only flow upwards in the parse tree.
+
+```
+A -> BC
+A: A gets its attribute values from A and B
+```
+
+2) Inherited attributes
+
+Attributes are inherited either from the parent of siblings.
+In the previous example, B could take a value from A and/or C. Similar for C.
+
 ### Intermediate Code (`IR`)
 
 - Interface between the frontend and backend of a compiler.
