@@ -126,10 +126,10 @@ void incr_scope() { /* go to next scope */
 /* print to stdout by default */ 
 void symtab_dump(FILE * of) {
   int i;
-  fprintf(of,"------------ ------ ------------\n");
-  fprintf(of,"Name         Type   Line Numbers\n");
-  fprintf(of,"------------ ------ -------------\n");
-  for (i=0; i < SIZE; ++i) {
+  fprintf(of,"------------ ------ ------ ------------\n");
+  fprintf(of,"Name         Type   Scope   Line Numbers\n");
+  fprintf(of,"------------ ------ ------ -------------\n");
+  for (i = 0; i < SIZE; ++i) {
 	if (hash_table[i] != NULL) {
 		list_t *l = hash_table[i];
 		while (l != NULL) {
@@ -158,6 +158,7 @@ void symtab_dump(FILE * of) {
 
 			else fprintf(of,"%-7s","undef"); // if UNDEF or 0
 											 //
+			fprintf(of,"  %d  ",l->scope);
 			while (t != NULL) {
 				fprintf(of,"%4d ",t->lineno);
 				t = t->next;
