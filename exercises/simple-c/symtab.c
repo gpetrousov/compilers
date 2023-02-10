@@ -7,6 +7,7 @@
 
 /* current scope */
 int cur_scope = 0;
+int declare;
 
 void init_hash_table() {
 	int i; 
@@ -42,18 +43,41 @@ void insert(char *name, int len, int type, int lineno) {
 		printf("Inserted %s for the first time with linenumber %d!\n", name, lineno);
 	}
 
-	/* found in table, so just add line number */
+	/* found in table */
 	else {
-		l->scope = cur_scope;
-		RefList *t = l->lines;
+		// Update its line number
+		if (declare == 0) {
+			RefList *t = l->lines;
 
-		// Looks for the next empty line
-		while (t->next != NULL) t = t->next;
-		/* add linenumber to reference list */
-		t->next = (RefList*) malloc(sizeof(RefList));
-		t->next->lineno = lineno;
-		t->next->next = NULL;
-		printf("Found %s again at line %d!\n", name, lineno);
+			// Looks for the next empty line
+			while (t->next != NULL) t = t->next;
+			/* add line number to reference list */
+			t->next = (RefList*) malloc(sizeof(RefList));
+			t->next->lineno = lineno;
+			t->next->next = NULL;
+			printf("Found %s again at line %d!\n", name, lineno);
+		}
+		else {
+			/* same scope - multiple declaration error! */
+			if (l->scope == cur_scope) {
+				fprintf(stderr, "Multiple declaration of variable %s at line %d\n", name, lineno);
+				exit(1);
+			}
+			else {
+				/* other scope - create new entry - we reference a global variable */
+				l = (list_t*) malloc(sizeof(list_t));
+				strncpy(l->st_name, name, len);  
+				/* add to hashtable */
+				l->st_type = type;
+				l->scope = cur_scope;
+				l->lines = (RefList*) malloc(sizeof(RefList));
+				l->lines->lineno = lineno;
+				l->lines->next = NULL;
+				l->next = hash_table[hashval];
+				hash_table[hashval] = l; 
+				printf("Inserted %s for a new scope with linenumber %d!\n", name, lineno);
+			}
+		}
 	}
 }
 
@@ -75,7 +99,23 @@ list_t *lookup_scope(char *name, int scope) {
 
 /* Decrease current scope */
 void hide_scope() { /* hide the current scope */
-	if(cur_scope > 0) cur_scope--;
+	list_t *l;
+	int i;
+	printf("Hiding scope \'%d\':\n", cur_scope);
+	for (i = 0; i < SIZE; i++) {
+		if (hash_table[i] != NULL) {
+			l = hash_table[i];
+
+			/* Find the first item that is from another scope */
+			while (l != NULL && l->scope == cur_scope) {
+				printf("Hiding %s..\n", l->st_name);
+				l = l->next;
+			}
+			/* Set the list equal to that item */
+			hash_table[i] = l;
+		}
+	}
+	cur_scope--;
 }
 
 /* Increase current scope */
