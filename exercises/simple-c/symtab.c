@@ -40,13 +40,13 @@ void insert(char *name, int len, int type, int lineno) {
 		l->lines->next = NULL;
 		l->next = hash_table[hashval];
 		hash_table[hashval] = l; 
-		printf("Inserted %s for the first time with linenumber %d!\n", name, lineno);
+		printf("Inserted %s for the first time with linenumber: %d and hashvalue: %d!\n", name, lineno, hashval);
 	}
 
 	/* found in table */
 	else {
-		// Update its line number
 		if (declare == 0) {
+			/* If we reference the variable on another line. */
 			RefList *t = l->lines;
 
 			// Looks for the next empty line
@@ -58,7 +58,7 @@ void insert(char *name, int len, int type, int lineno) {
 			printf("Found %s again at line %d!\n", name, lineno);
 		}
 		else {
-			/* same scope - multiple declaration error! */
+			/* If we declare the variable in the same scope with the same name. */
 			if (l->scope == cur_scope) {
 				fprintf(stderr, "Multiple declaration of variable %s at line %d\n", name, lineno);
 				exit(1);
@@ -75,7 +75,7 @@ void insert(char *name, int len, int type, int lineno) {
 				l->lines->next = NULL;
 				l->next = hash_table[hashval];
 				hash_table[hashval] = l; 
-				printf("Inserted %s for a new scope with linenumber %d!\n", name, lineno);
+				printf("Inserted %s for a new scope with linenumber %d and hashvalue: %d!\n", name, lineno, hashval);
 			}
 		}
 	}
@@ -97,8 +97,8 @@ list_t *lookup_scope(char *name, int scope) {
     return l;
 }
 
-/* Decrease current scope */
-void hide_scope() { /* hide the current scope */
+/* Remove items from the same scope and decrease the scope variable. */
+void hide_scope() {
 	list_t *l;
 	int i;
 	printf("Hiding scope \'%d\':\n", cur_scope);
@@ -106,7 +106,7 @@ void hide_scope() { /* hide the current scope */
 		if (hash_table[i] != NULL) {
 			l = hash_table[i];
 
-			/* Find the first item that is from another scope */
+			/* Find the first item that is from the same scope, before decreasing it */
 			while (l != NULL && l->scope == cur_scope) {
 				printf("Hiding %s..\n", l->st_name);
 				l = l->next;
