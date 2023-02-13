@@ -58,7 +58,7 @@ void insert(char *name, int len, int type, int lineno) {
 			printf("Inserted %s at line %d to check it again later!\n", name, lineno);
 
 			/* Adding identifier to the revisit queue! */
-			//add_to_queue(l->st_name, PARAM_CHECK);
+			add_to_queue(l->st_name, PARAM_CHECK);
 		}
 	}
 
@@ -188,6 +188,35 @@ void symtab_dump(FILE * of) {
 		}
     }
   }
+}
+
+
+void add_to_queue(char *name, int type){ /* add to queue */
+	revisit_queue *q;
+
+	/* queue is empty */
+	if(queue == NULL){
+		/* set up entry */
+		q = (revisit_queue*) malloc(sizeof(revisit_queue));
+		q->st_name = name;
+		q->revisit_type = type;
+		q->next = NULL;
+
+		/* q "becomes" the queue */
+		queue = q;
+	}
+	/* queue not empty */
+	else{
+		/* find last element */
+		q = queue;
+		while(q->next != NULL) q = q->next;
+
+		/* add element to the end */
+		q->next = (revisit_queue*) malloc(sizeof(revisit_queue));
+		q->next->st_name = name;
+		q->next->revisit_type = type;
+		q->next->next = NULL;
+	}
 }
 
 /* Print the revisit table */

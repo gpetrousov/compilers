@@ -19,6 +19,9 @@
 #define BY_VALUE 1
 #define BY_REFER 2
 
+/* Check parameters of function call when functions gets declared */
+#define PARAM_CHECK 1
+
 /* parameter struct */
 typedef struct Param{
 	int par_type;

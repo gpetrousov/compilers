@@ -166,6 +166,11 @@ int main(int argc, char *argv[]) {
 	symtab_dump(yyout);
 	fclose(yyout);
 
+	// Save revisit table to file.
+	yyout = fopen("revisit.out", "w");
+	revisit_dump(yyout);
+	fclose(yyout);
+
     printf("=== Parser ends ===\n");
 
 	return flag;
