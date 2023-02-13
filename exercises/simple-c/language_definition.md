@@ -49,3 +49,15 @@ STRING's are printable ASCII characters in between of two ".
 /* Comments */
 Anything in a line that starts with '//' is a comment and will be ignored
 Anything in between of '/*' and '*/' that can span through multiple lines is also a comment
+
+/* Program structure */
+
+- Code for main function:
+	1. declarations
+	2. statements
+	3. return
+
+- Functions:
+	1. declarations
+	2. statements
+	3. optional return

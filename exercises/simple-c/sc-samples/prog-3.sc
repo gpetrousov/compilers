@@ -40,11 +40,13 @@ while(i < 12){ // while
 }
 print("\n");
 return; /* RETURN SEMI */
+
 // other functions (functions)
 int func1(){ 		/* without parameters */
 	// statements
 	return 5;
 }
+
 void func2(char c){ /* with one parameter */
 	// declarations
 	char *s;
@@ -52,6 +54,7 @@ void func2(char c){ /* with one parameter */
 	*s = c;
 	print(*s);
 }
+
 double add (double a, int b){  /* with two parameters */
     // declarations
     double res;
