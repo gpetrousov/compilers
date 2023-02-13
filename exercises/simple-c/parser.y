@@ -124,6 +124,7 @@ functions_optional: functions | /* empty */ ;
 functions: functions function | function ;
 function: { incr_scope(); } function_head function_tail { hide_scope(); } ;
 
+// TODO: change parameter* => declaration_parameter* to add more clarity
 function_head: return_type ID LPAREN parameters_optional RPAREN ;
 return_type: type | pointer type ;
 parameters_optional: parameters | /* empty */ ;

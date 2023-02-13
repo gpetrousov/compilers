@@ -189,3 +189,23 @@ void symtab_dump(FILE * of) {
     }
   }
 }
+
+/* Print the revisit table */
+void revisit_dump(FILE *of){
+    int i;
+    revisit_queue *q;
+    q = queue;
+
+    fprintf(of,"------------ -------------\n");
+    fprintf(of,"Identifier   Revisit Type\n");
+    fprintf(of,"------------ -------------\n");
+    while(q != NULL){
+        fprintf(of, "%-13s", q->st_name);
+        if (q->revisit_type == PARAM_CHECK) {
+            fprintf(of,"%s","Parameter Check");
+        }
+        // more later on
+        fprintf(of, "\n");
+        q = q->next;
+    }
+}
