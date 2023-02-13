@@ -30,29 +30,48 @@ void insert(char *name, int len, int type, int lineno) {
 	
 	/* variable not yet in table */
 	if (l == NULL) {
-		l = (list_t*) malloc(sizeof(list_t));
-		strncpy(l->st_name, name, len);  
-		/* add to hashtable */
-		l->st_type = type;
-		l->scope = cur_scope;
-		l->lines = (RefList*) malloc(sizeof(RefList));
-		l->lines->lineno = lineno;
-		l->lines->next = NULL;
-		l->next = hash_table[hashval];
-		hash_table[hashval] = l; 
-		printf("Inserted %s for the first time with linenumber: %d and hashvalue: %d!\n", name, lineno, hashval);
+		/* Check if we are really declaring */
+		if ( declare == 1 ) {
+			l = (list_t*) malloc(sizeof(list_t));
+			strncpy(l->st_name, name, len);
+			/* add to hashtable */
+			l->st_type = type;
+			l->scope = cur_scope;
+			l->lines = (reflist*) malloc(sizeof(reflist));
+			l->lines->lineno = lineno;
+			l->lines->next = NULL;
+			l->next = hash_table[hashval];
+			hash_table[hashval] = l;
+			printf("Inserted %s for the first time with linenumber: %d and hashvalue: %d!\n", name, lineno, hashval);
+		}
+		else {
+			/* add it to check it again later */
+			l = (list_t*) malloc(sizeof(list_t));
+			strncpy(l->st_name, name, len);
+			l->st_type = type;
+			l->scope = cur_scope;
+			l->lines = (reflist*) malloc(sizeof(reflist));
+			l->lines->lineno = lineno;
+			l->lines->next = NULL;
+			l->next = hash_table[hashval];
+			hash_table[hashval] = l;
+			printf("Inserted %s at line %d to check it again later!\n", name, lineno);
+
+			/* Adding identifier to the revisit queue! */
+			//add_to_queue(l->st_name, PARAM_CHECK);
+		}
 	}
 
 	/* found in table */
 	else {
 		if (declare == 0) {
 			/* If we reference the variable on another line. */
-			RefList *t = l->lines;
+			reflist *t = l->lines;
 
 			// Looks for the next empty line
 			while (t->next != NULL) t = t->next;
 			/* add line number to reference list */
-			t->next = (RefList*) malloc(sizeof(RefList));
+			t->next = (reflist*) malloc(sizeof(reflist));
 			t->next->lineno = lineno;
 			t->next->next = NULL;
 			printf("Found %s again at line %d!\n", name, lineno);
@@ -70,7 +89,7 @@ void insert(char *name, int len, int type, int lineno) {
 				/* add to hashtable */
 				l->st_type = type;
 				l->scope = cur_scope;
-				l->lines = (RefList*) malloc(sizeof(RefList));
+				l->lines = (reflist*) malloc(sizeof(reflist));
 				l->lines->lineno = lineno;
 				l->lines->next = NULL;
 				l->next = hash_table[hashval];
@@ -133,7 +152,7 @@ void symtab_dump(FILE * of) {
 	if (hash_table[i] != NULL) {
 		list_t *l = hash_table[i];
 		while (l != NULL) {
-			RefList *t = l->lines;
+			reflist *t = l->lines;
 			fprintf(of,"%-12s ",l->st_name);
 
 			if (l->st_type == INT_TYPE) fprintf(of,"%-7s","int");

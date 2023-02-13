@@ -29,18 +29,18 @@ typedef struct Param{
 }Param;
 
 /* a linked list of references (lineno's) for each variable */
-typedef struct RefList{ 
+typedef struct reflist {
     int lineno;
-    struct RefList *next;
+    struct reflist *next;
     int type;
-}RefList;
+}reflist;
 
 // struct that represents a list node
 typedef struct list_t{
     char st_name[MAXTOKENLEN];
     int st_size;
     int scope;
-    RefList *lines;
+    reflist *lines;
     // to store value and sometimes more information
     int st_ival; double st_fval; char *st_sval;
     // type
@@ -57,8 +57,23 @@ typedef struct list_t{
     struct list_t *next;
 }list_t;
 
+typedef struct revisit_queue{
+    // name of identifier
+    char *st_name;
+
+    // type of revisit
+    int revisit_type;
+
+    // maybe additional information to simplify the process ...
+
+    struct revisit_queue *next;
+}revisit_queue;
+
 /* the hash table */
 static list_t **hash_table;
+
+/* Revisit queue */
+static revisit_queue *queue;
 
 // Function Declarations
 void init_hash_table(); // initialize hash table

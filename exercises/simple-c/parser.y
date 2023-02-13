@@ -54,7 +54,7 @@ program: declarations statements RETURN SEMI functions_optional ;
 
 /***** Declarations or Initializations *****/
 declarations: declarations declaration | declaration;
-declaration: { declare = 1; } type names { declare = 0; } SEMI;
+declaration: { declare = 1; printf("variable declaration -> declare == %d\n", declare); } type names { declare = 0; } SEMI;
 type: INT | CHAR | FLOAT | DOUBLE | VOID;
 names: names COMMA variable | names COMMA init | variable | init ;
 init: var_init | array_init ;
@@ -128,7 +128,7 @@ function_head: return_type ID LPAREN parameters_optional RPAREN ;
 return_type: type | pointer type ;
 parameters_optional: parameters | /* empty */ ;
 parameters: parameters COMMA parameter | parameter ;
-parameter: { declare = 1; } type variable { declare = 0; } ;
+parameter: { declare = 1; ; printf("function parameter declaration -> declare == %d\n", declare); } type variable { declare = 0; } ;
 
 function_tail: LBRACE declarations_optional statements_optional return_optional RBRACE;
 declarations_optional: declarations | /* empty */ ;
