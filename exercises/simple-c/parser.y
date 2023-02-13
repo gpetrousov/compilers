@@ -114,12 +114,14 @@ expression ADDOP expression
 ;
 
 sign: ADDOP | /* empty */ ;
+
+/* Function calls */
 function_call: ID LPAREN call_params RPAREN ;
 call_params: call_param | STRING | /* empty */ ;
 call_param: call_param COMMA expression | expression ;
 
 
-/***** Functions *****/
+/***** Function declarations *****/
 functions_optional: functions | /* empty */ ;
 functions: functions function | function ;
 function: { incr_scope(); } function_head function_tail { hide_scope(); } ;
