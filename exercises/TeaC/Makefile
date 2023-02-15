@@ -1,4 +1,7 @@
-all: flex
-	gcc teac.yy.c
-flex:
-	flex -o teac.yy.c teac.l
+all:
+	flex teac.l
+	gcc lex.yy.c
+
+clean:
+	rm a.out
+	rm lex.yy.c
