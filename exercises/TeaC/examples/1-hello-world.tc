@@ -4,17 +4,6 @@ File: myprog.tc *)
 -- Constant
 const message[14] <- "Hello world!\n": string;
 
-const I <- 0 : int;
-const II <- 42 : int;
-const III <- 1284200 : int;
-
-const C <- 42.0 : real;
-const XX <- 42.1 : real;
-const XXX <- 42.01 : real;
-const CC <- 4.2e1 : real;
-const CCC <- 0.420E+2: real;
-const CCCC <- 42000.0e-3 : real;
-
 const start <- (): int => {
 	i <- k ^ 2;
 	writeString(message);

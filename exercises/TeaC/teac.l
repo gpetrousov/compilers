@@ -16,9 +16,10 @@ ID [a-zA-Z]+[0-9_]*
 CONST_INTEGER "0"|[1-9][0-9]*
 
 /* real positive constant */
-FRACTIONAL_PART "."[0-9]+
-EXPONENT_PART ("E"|"e")("+"|"-"){CONST_INTEGER}
-REAL {CONST_INTEGER}{FRACTIONAL_PART}
+INTEGER_PART (0{1}|[0-9]+)
+FRACTIONAL_PART "."[0-9]*
+EXPONENT_PART ("e"|"E")?("+"|"-")?[1-9]*
+REAL {INTEGER_PART}{FRACTIONAL_PART}{EXPONENT_PART}
 
 /* string constant */
 STRING \"[ -~]*\"
