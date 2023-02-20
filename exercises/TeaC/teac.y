@@ -3,6 +3,8 @@
 	extern int yylineno;
 	extern int yyerror();
 	extern FILE *yyin;
+	extern int yylex();
+	extern int yyerror();
 %}
 
 /* keyword tokens */
