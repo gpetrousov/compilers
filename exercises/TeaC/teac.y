@@ -66,7 +66,7 @@ assignment: id_name ASSIGN_OP expression ;
 
 /* If statement */
 if_statement: IF_KW expression THEN_KW statements else_if_part else_part FI_KW ;
-else_if_part: else_if_part ELSE_KW IF_KW expression statements | ELSE_KW IF_KW expression statements | /* empty */ ;
+else_if_part: else_if_part ELSE_KW IF_KW expression statements FI_KW | ELSE_KW IF_KW expression statements FI_KW | /* empty */ ;
 else_part: ELSE_KW statements | /* empty */ ;
 
 /* while statement */
