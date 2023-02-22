@@ -96,9 +96,10 @@ type: INT_TYPE | REAL_TYPE | BOOL_TYPE | STRING_TYPE ;
 value: CONST_INTEGER_NUM | REAL_NUM | STRING ;
 
 /* main function */
-main_function: CONST_KW START_KW ASSIGN_OP LEFT_PAR RIGHT_PAR COLON INT_TYPE ARROW_DELIMITER LEFT_CURLY_BRACKET body RIGHT_CURLY_BRACKET ;
-body: declaration_list | statements | declaration_list statements | /* empty */;
-declaration_list: constants_optional variables_optional ;
+main_function: main_head body main_tail ;
+main_head: "const start <- (): int => " LEFT_CURLY_BRACKET
+main_tail: RIGHT_CURLY_BRACKET
+body: constants | variables | constants statements | variables statements | statements | /* empty */ ;
 
 %%
 
