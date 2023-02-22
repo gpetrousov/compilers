@@ -32,7 +32,8 @@ SEMI LEFT_PAR RIGHT_PAR COMMA LEFT_BRACKET RIGHT_BRACKET LEFT_CURLY_BRACKET	RIGH
 %right NOT_OP 
 %left MUL_OP DIV_OP MOD_OP PLUS_OP MINUS_OP
 %left EQ_OP NEQ_OP LT_OP LTEQ_OP AND_OP OR_OP
-%precedence THEN_KW ELSE_KW
+%nonassoc THEN_KW
+%nonassoc ELSE_KW
 
 %start program
 
@@ -64,7 +65,8 @@ statements: statements statement | statement ;
 assignment: id_name ASSIGN_OP expression ;
 
 /* If statement */
-if_statement: IF_KW expression THEN_KW statements FI_KW | IF_KW expression THEN_KW statements ELSE_KW statements optional_else_part FI_KW ;
+if_statement: IF_KW expression THEN_KW statements FI_KW
+			| IF_KW expression THEN_KW statements ELSE_KW statements optional_else_part FI_KW ;
 optional_else_part: ELSE_KW statements | /* empty */ ;
 
 /* while statement */
