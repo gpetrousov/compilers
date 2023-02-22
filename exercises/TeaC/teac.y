@@ -64,10 +64,8 @@ statements: statements statement | statement ;
 assignment: id_name ASSIGN_OP expression ;
 
 /* If statement */
-if_statement: IF_KW expression THEN_KW tail | IF_KW expression THEN_KW tail else_if_part optional_else_part ;
-else_if_part: else_if_part ELSE_KW IF_KW expression tail | ELSE_KW IF_KW expression tail ;
-optional_else_part: ELSE_KW tail | /* empty */ ;
-tail: statements FI_KW ;
+if_statement: IF_KW expression THEN_KW statements FI_KW | IF_KW expression THEN_KW statements ELSE_KW statements optional_else_part FI_KW ;
+optional_else_part: ELSE_KW statements | /* empty */ ;
 
 /* while statement */
 while_statement: WHILE_KW expression LOOP_KW statements POOL_KW ;
