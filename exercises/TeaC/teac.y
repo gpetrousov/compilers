@@ -65,7 +65,7 @@ statement: assignment | if_statement | while_statement ;
 statements: statements statement | statement ;
 
 /* assignment */
-assignment: id_name ASSIGN_OP expression ;
+assignment: id_name ASSIGN_OP expression SEMI ;
 
 /* If statement */
 if_statement: IF_KW expression THEN_KW statements FI_KW
@@ -100,7 +100,11 @@ value: CONST_INTEGER_NUM | REAL_NUM | STRING ;
 
 /* main function */
 main_function: MAIN_FUNCTION_HEAD LEFT_CURLY_BRACKET body RIGHT_CURLY_BRACKET ;
-body: constants | variables | constants statements | variables statements | statements | /* empty */ ;
+body:
+	variables |
+	statements |
+	variables statements |
+	/* empty */ ;
 
 %%
 
