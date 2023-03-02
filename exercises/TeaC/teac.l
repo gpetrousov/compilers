@@ -26,6 +26,7 @@ CONST_KW 	"const"
 LET_KW		"let"
 RETURN_KW 	"return"
 START_KW	"start"
+MAIN_FUNCTION_HEAD "const start <- (): int =>"
 
 /* identifiers */
 ID [a-zA-Z]+[0-9_]*
@@ -141,6 +142,8 @@ NEW_LINE "\n"
 {RIGHT_CURLY_BRACKET}	{ printf("%d: Token RIGHT_CURLY_BRACKET: %s\n", yylineno, yytext); return RIGHT_CURLY_BRACKET; }
 {ARROW_DELIMITER} 		{ printf("%d: Token: ARROW_DELIMITER %s\n", yylineno, yytext); return ARROW_DELIMITER; }
 {COLON}					{ printf("%d: Token COLON: %s\n", yylineno, yytext); return COLON; }
+
+{MAIN_FUNCTION_HEAD} { printf("%d: Token: MAIN_FUNCTION_HEAD : %s\n", yylineno, yytext); return MAIN_FUNCTION_HEAD; }
 
 {ID} {
 	printf("%d: Token: IDENTIFIER: %s\n", yylineno, yytext);

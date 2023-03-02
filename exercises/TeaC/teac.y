@@ -28,6 +28,9 @@
 /* delimiters */
 SEMI LEFT_PAR RIGHT_PAR COMMA LEFT_BRACKET RIGHT_BRACKET LEFT_CURLY_BRACKET	RIGHT_CURLY_BRACKET	ARROW_DELIMITER	COLON
 
+/* main function head token */
+MAIN_FUNCTION_HEAD
+
 /* precedence and associativity */
 %right NOT_OP 
 %left MUL_OP DIV_OP MOD_OP PLUS_OP MINUS_OP
@@ -96,9 +99,7 @@ type: INT_TYPE | REAL_TYPE | BOOL_TYPE | STRING_TYPE ;
 value: CONST_INTEGER_NUM | REAL_NUM | STRING ;
 
 /* main function */
-main_function: main_head body main_tail ;
-main_head: "const start <- (): int => " LEFT_CURLY_BRACKET
-main_tail: RIGHT_CURLY_BRACKET
+main_function: MAIN_FUNCTION_HEAD LEFT_CURLY_BRACKET body RIGHT_CURLY_BRACKET ;
 body: constants | variables | constants statements | variables statements | statements | /* empty */ ;
 
 %%

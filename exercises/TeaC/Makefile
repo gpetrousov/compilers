@@ -12,3 +12,4 @@ clean:
 	-rm lex.yy.c
 	-rm teac.tab.c
 	-rm teac.tab.h
+	-rm teac.output
