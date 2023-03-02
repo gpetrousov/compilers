@@ -5,8 +5,6 @@ File: myprog.tc *)
 const message[14] <- "Hello world!\n": string;
 
 const start <- (): int => {
-	i <- k ^ 2;
-	writeString(message);
 	let i <- 5 : int; -- Variable
-	writeInt(i);
+	i <- k * 2;
 }
