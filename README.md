@@ -577,8 +577,8 @@ A1 → β|γ
 		- Have added complexity.
 
 ### Grammar to parser classification
-- `LL(k)`: Read Left to right, Leftmost derivation, k lookaheads max.
-- `LR(k)`: Read Left to right, Rightmost derivation in reverse, k lookaheads max.
+- `LL(k)`: Read Left to right, Leftmost derivation, k lookaheads max. (Read Top->Down; Perform Leftmost derivation) -- https://en.wikipedia.org/wiki/LL_parser
+- `LR(k)`: Read Left to right, Rightmost derivation in reverse, k lookaheads max. (Read Bottom-Up; Use a stack;) -- https://en.wikipedia.org/wiki/LR_parser
 - Most programming languages: `LL(1)`.
 - `LL(k)` grammars are `LR(k)`
 - `LR(k)`: harder to implement, more powerfull than `LL(k)`
@@ -590,7 +590,7 @@ A1 → β|γ
 Example
 ![Rightmost derivation in reverse](assets/rightmost_derivation_reverse.png)
 - Standardized algorithms exist.
-- SOme lookahead is necessary.
+- Some lookahead is necessary.
 - `The handle`:
 		- The substring match with the production on the right hand side.
 		- Key problem in bottom-up parsing, identification of the handle.
@@ -975,6 +975,34 @@ Any element (e) is accessible via its memory address:
 - Complements the Chomsky type 2 grammer (free context).
 - Describes the types of the nodes (**semantic information**) in the AST (Abstract Syntax Tree).
 - Semantic informaiton is stored in attributes associated with terminal and non-terminal symbols.
+
+**What is attribute grammar and how you get it?**
+
+Trying to make a Context Sensitive Grammar (CSG) compiler would be a difficult process.
+Instead, we use a different approach to add more information to the parser tree.
+To provide additional information about the nodes in the parse tree, we add additional information (or attributes) about those nodes (which contain, terminal or non-terminal tokens).
+This extension, with additional attributes, complements our CFG and turns it into an Attribute Grammar.
+
+Such a grammar is a special form of CFG, where additional information, in form of attributes, is appended to one or more of the terminal and non-terminal symbols, thus providing semantics to a CFG.
+
+#### Attributes
+
+The attributes are divided into 2 categories:
+
+1) Synthesized attributes
+
+The ones that get their values only from the attribute values of their child nodes.
+Synthesized attributes can only flow upwards in the parse tree.
+
+```
+A -> BC
+A: A gets its attribute values from A and B
+```
+
+2) Inherited attributes
+
+Attributes are inherited either from the parent of siblings.
+In the previous example, B could take a value from A and/or C. Similar for C.
 
 ### Intermediate Code (`IR`)
 
