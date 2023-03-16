@@ -1,165 +1,166 @@
+%option noyywrap yylineno
+
 %{
-	int linenum = 1;
+	#include <stdio.h>
+	#include "teac.tab.h"
+	extern int yylineno;
+	extern int yyerror();
+	extern FILE *yyin;
 %}
 
-/* Types */
-INT_KW "int"
-REAL_KW "real"
-BOOL_KW "bool"
-STRING_KW "string"
+/* Keywords */
+INT_TYPE 	"int"
+REAL_TYPE 	"real"
+BOOL_TYPE	"bool"
+STRING_TYPE	"string"
+TRUE_KW 	"true"
+FALSE_KW 	"false"
+IF_KW		"if"
+THEN_KW		"then"
+ELSE_KW 	"else"
+FI_KW 		"fi"
+WHILE_KW 	"while"
+LOOP_KW 	"loop"
+POOL_KW 	"pool"
+CONST_KW 	"const"
+LET_KW		"let"
+RETURN_KW 	"return"
+START_KW	"start"
+MAIN_FUNCTION_HEAD "const start <- (): int =>"
 
-/* Arithmetic Operators */
-PLUS_OP "+"
-MINUS_OP "-"
-MUL_OP "*"
-DIV_OP "/"
-MOD_OP "%"
+/* identifiers */
+ID [a-zA-Z]+[0-9_]*
 
-/* Relational Operators */
-EQ_OP	"="
-NEQ_OP	"!="
-LT_OP	"<"
-LTEQ_OP	"<="
+/* integer positive constant */
+CONST_INTEGER_NUM "0"|[1-9][0-9]*
 
-/* Logical tokens - LOTO */
-TRUE_LOTO "true"
-FALSE_LOTO "false"
+/* real positive constant */
+INTEGER_PART (0{1}|[0-9]+)
+FRACTIONAL_PART "."[0-9]*
+EXPONENT_PART ("e"|"E")?("+"|"-")?[1-9]*
+REAL_NUM {INTEGER_PART}{FRACTIONAL_PART}{EXPONENT_PART}
 
-/* Logical operators - LOP */
-NOT_LOP "not"
-AND_LOP "and"
-OR_LOP "or"
+/* string constant */
+STRING \"[ -~]*\"
 
-/* Conditionals */
-IF_KW "if"
-THEN_KW "then"
-ELSE_KW "else"
-FI_KW "fi"
+/* operators */
+EQ_OP		"="
+LT_OP		"<"
+LTEQ_OP		"<="
+NEQ_OP		"!="
+AND_OP	 	"and"
+OR_OP 		"or"
+NOT_OP		"not"
+PLUS_OP		"+"
+MINUS_OP	"-"
+MUL_OP		"*"
+DIV_OP		"/"
+MOD_OP		"%"
+ASSIGN_OP	"<-"
 
-/* Loops */
-WHILE_KW "while"
-LOOP_KW "loop"
-POOL_KW "pool"
+/* delimiters */
+SEMI 				";"
+LEFT_PAR 			"("
+RIGHT_PAR 			")"
+COMMA 				","
+LEFT_BRACKET 		"["
+RIGHT_BRACKET 		"]"
+LEFT_CURLY_BRACKET	"{"
+RIGHT_CURLY_BRACKET	"}"
+ARROW_DELIMITER		"=>"
+COLON				":"
 
-/* Misc */
-CONST_KW "const"
-START_KW "start"
-ARROW_OP "=>"
+/* Whitespaces */
+WHITESPACE [ \t\n\r]+
 
-/* Assignments */
-LET_KW "let"
+/* multi line comment */
+ML_COMMENT "(*" 
+%x ML_COMMENT
 
-/* Control */
-RETURN_KW "return"
+/* single line comment */
+SL_COMMENT "--".*
 
-/* Identifiers */
-IDENTIFIER ([a-z]|[A-Z]){1}[a-zA-Z0-9_]*
-
-/* Integer positive constants */
-INT_POS_CONST [0-9]+
-
-/* Real positive constants */
-REAL_POS_CONST (0|[1-9]+)\.(0|[1-9]+)
-
-/* Constant strings -
-https://www.appsloveworld.com/cplus/100/1418/flex-regular-expression-for-strings-with-either-single-or-double-quotes*/
-CONST_STR ["]([^"\\\n]|\\(.|\n))*["]
-
-/* Delimiters */
-SEMICOLON ";"
-OP_PAR "("
-CL_PAR ")"
-COMMA ","
-OP_SQB "["
-CL_SQB "]"
-ASSIGNMENT "<-"
-COLON ":"
-OP_CURLY_BRACKET "{"
-CL_CURLY_BRACKET "}"
-
-/* Comments */
-SL_COMMENTS [--]([^"\\\n]|\\(.|\n))*[\n]
-
-/* Rest */
-CR [\n]
-WHITESPACE [ \t\n]
+/* new line */
+NEW_LINE "\n"
 
 %%
 
-{INT_KW}		{ printf("%d: token(KEYWORD): INT\n", linenum); }
-{REAL_KW}		{ printf("%d: token(KEYWORD): REAL\n", linenum); }
-{BOOL_KW}		{ printf("%d: token(KEYWORD): BOOL\n", linenum); }
-{STRING_KW}		{ printf("%d: token(KEYWORD): STRING\n", linenum); }
-{TRUE_LOTO} 	{ printf("%d: token(TRUE_LOTO): TRUE\n", linenum); }
-{FALSE_LOTO} 	{ printf("%d: token(FALSE_LOTO): FALSE\n", linenum); }
-{IF_KW}    		{ printf("%d: token(KEYWORD): IF\n", linenum); }
-{THEN_KW}  		{ printf("%d: token(KEYWORD): THEN\n", linenum); }
-{ELSE_KW}		{ printf("%d: token(KEYWORD): ELSE\n", linenum); }
-{FI_KW}    		{ printf("%d: token(KEYWORD): FI\n", linenum); }
-{WHILE_KW}		{ printf("%d: token(KEYWORD): WHILE\n", linenum); }
-{LOOP_KW}  		{ printf("%d: token(KEYWORD): LOOP\n", linenum); }
-{POOL_KW}  		{ printf("%d: token(KEYWORD): POOL\n", linenum); }
-{CONST_KW} 		{ printf("%d: token(KEYWORD): CONST\n", linenum); }
-{LET_KW}   		{ printf("%d: token(KEYWORD): LET\n", linenum); }
-{RETURN_KW}		{ printf("%d: token(KEYWORD): RETURN\n", linenum); }
-{NOT_LOP}   	{ printf("%d: token(NOT_LOP): NOT\n", linenum); }
-{AND_LOP}   	{ printf("%d: token(AND_LOP): AND\n", linenum); }
-{OR_LOP}    	{ printf("%d: token(OR_LOP): OR\n", linenum); }
-{START_KW}	 	{ printf("%d: token(KEYWORD): START\n", linenum); }
+{INT_TYPE}		{ printf("%d: Token: INT_TYPE: %s\n", yylineno, yytext); return INT_TYPE; }
+{REAL_TYPE} 	{ printf("%d: Token: REAL_TYPE %s\n", yylineno, yytext); return REAL_TYPE; }
+{BOOL_TYPE} 	{ printf("%d: Token: BOOL_TYPE: %s\n", yylineno, yytext); return BOOL_TYPE; }
+{STRING_TYPE}	{ printf("%d: Token: STRING_TYPE: %s\n", yylineno, yytext); return STRING_TYPE; }
+{TRUE_KW} 		{ printf("%d: Token: TRUE_KW: %s\n", yylineno, yytext); return TRUE_KW; }
+{FALSE_KW}		{ printf("%d: Token: FALSE_KW: %s\n", yylineno, yytext); return FALSE_KW; }
+{IF_KW}			{ printf("%d: Token: IF_KW: %s\n", yylineno, yytext); return IF_KW; }
+{THEN_KW} 		{ printf("%d: Token: THEN_KW: %s\n", yylineno, yytext); return THEN_KW; }
+{ELSE_KW} 		{ printf("%d: Token: ELSE_KW: %s\n", yylineno, yytext); return ELSE_KW; }
+{FI_KW} 		{ printf("%d: Token: FI_KW: %s\n", yylineno, yytext); return FI_KW; }
+{WHILE_KW}		{ printf("%d: Token: WHILE_KW: %s\n", yylineno, yytext); return WHILE_KW; }
+{LOOP_KW} 		{ printf("%d: Token: LOOP_KW: %s\n", yylineno, yytext); return LOOP_KW; }
+{POOL_KW} 		{ printf("%d: Token: POOL_KW: %s\n", yylineno, yytext); return POOL_KW; }
+{CONST_KW}		{ printf("%d: Token: CONST_KW: %s\n", yylineno, yytext); return CONST_KW; }
+{LET_KW} 		{ printf("%d: Token: LET_KW: %s\n", yylineno, yytext); return LET_KW; }
+{RETURN_KW} 	{ printf("%d: Token: RETURN_KW: %s\n", yylineno, yytext); return RETURN_KW; }
+{START_KW}		{ printf("%d: Token: START_KW: %s\n", yylineno, yytext); return START_KW; }
 
-{REAL_POS_CONST} { printf("%d: token(REAL_POS_CONST): %f\n", linenum, strtof(yytext, NULL)); }
-
-{INT_POS_CONST}	{ printf("%d: token(INT_POS_CONST): %d\n", linenum, atoi(yytext)); }
-
-{IDENTIFIER} 	{ printf("%d: token(IDENTIFIER): %s\n", linenum, yytext); }
-
-{CONST_STR}		{ printf("%d: token(CONST_STR): %s\n", linenum, yytext); }
-
-{ARROW_OP}		{ printf("%d: token(ARROW_OP): %s\n", linenum, yytext); }
-{PLUS_OP}		{ printf("%d: token(PLUS_OP): %s\n", linenum, yytext); }
-{MINUS_OP}		{ printf("%d: token(MINUS_OP): %s\n", linenum, yytext); }
-{MUL_OP}		{ printf("%d: token(MUL_OP): %s\n", linenum, yytext); }
-{DIV_OP}		{ printf("%d: token(DIV_OP): %s\n", linenum, yytext); }
-{MOD_OP}		{ printf("%d: token(MOD_OP): %s\n", linenum, yytext); }
-
-{EQ_OP}			{ printf("%d: token(EQ_OP): %s\n", linenum, yytext); }
-{NEQ_OP}		{ printf("%d: token(NEQ_OP): %s\n", linenum, yytext); }
-{LT_OP}			{ printf("%d: token(LT_OP): %s\n", linenum, yytext); }
-{LTEQ_OP}		{ printf("%d: token(LTEQ_OP): %s\n", linenum, yytext); }
-
-{SEMICOLON}		{ printf("%d: token(SEMICOLON): %s\n", linenum, yytext); }
-{OP_PAR}		{ printf("%d: token(OP_PAR): %s\n", linenum, yytext); }
-{CL_PAR}		{ printf("%d: token(CL_PAR): %s\n", linenum, yytext); }
-{COMMA}			{ printf("%d: token(COMMA): %s\n", linenum, yytext); }
-{OP_SQB}		{ printf("%d: token(OP_SQB): %s\n", linenum, yytext); }
-{CL_SQB}		{ printf("%d: token(CL_SQB): %s\n", linenum, yytext); }
-{ASSIGNMENT}	{ printf("%d: token(ASSIGNMENT): %s\n", linenum, yytext); }
-{COLON}			{ printf("%d: token(COLON): %s\n", linenum, yytext); }
-{OP_CURLY_BRACKET}		{ printf("%d: token(OP_CURLY_BRACKET): %s\n", linenum, yytext); }
-{CL_CURLY_BRACKET}		{ printf("%d: token(CL_CURLY_BRACKET): %s\n", linenum, yytext); }
-
-{SL_COMMENTS}	{ printf("%d: token(SL_COMMENTS): %s", linenum, yytext); linenum++; }
-
-{CR}			{ ++linenum; }
-
-{WHITESPACE}	;
-
-.				{ printf("%d: Unidentified character: %s\n", linenum, yylex); }
-
-%%
-
-int main(int argc, char *argv[]) {
-	if (argc > 1) {
-		if (!(yyin=fopen(argv[1], "r"))) {
-			perror(argv[1]);
-			return 2;
-		}
-		printf("File opened successfully!\n\n");
+{CONST_INTEGER_NUM} {
+	printf("%d: Token CONST_INTEGER_NUM: %s\n", yylineno, yytext);
+	return CONST_INTEGER_NUM;
 	}
-	yylex();
-	printf("\nTerminated\n");
-}
 
-int yywrap() {
-	return 1;
-}
+{REAL_NUM} {
+	printf("%d: Token REAL_NUM: %s\n", yylineno, yytext);
+	return REAL_NUM;
+	}
+
+{STRING} {
+	printf("%d: Token: STRING: %s\n", yylineno, yytext);
+	return STRING;
+	}
+
+{EQ_OP} 	{ printf("%d: Token EQ_OP: %s\n", yylineno, yytext); return EQ_OP; }
+{LT_OP} 	{ printf("%d: Token LT_OP: %s\n", yylineno, yytext); return LT_OP; }
+{LTEQ_OP} 	{ printf("%d: Token LTEQ_OP: %s\n", yylineno, yytext); return LTEQ_OP; }
+{NEQ_OP} 	{ printf("%d: Token NEQ_OP: %s\n", yylineno, yytext); return NEQ_OP; }
+{AND_OP}	{ printf("%d: Token AND_OP: %s\n", yylineno, yytext); return AND_OP; }
+{OR_OP}		{ printf("%d: Token OR_OP: %s\n", yylineno, yytext);  return OR_OP; }
+{NOT_OP} 	{ printf("%d: Token NOT_OP: %s\n", yylineno, yytext); return NOT_OP; }
+{PLUS_OP} 	{ printf("%d: Token PLUS_OP: %s\n", yylineno, yytext); return PLUS_OP; }
+{MINUS_OP}	{ printf("%d: Token MINUS_OP: %s\n", yylineno, yytext); return MINUS_OP; }
+{MUL_OP} 	{ printf("%d: Token MUL_OP: %s\n", yylineno, yytext); return MUL_OP; }
+{DIV_OP} 	{ printf("%d: Token DIV_OP: %s\n", yylineno, yytext); return DIV_OP; }
+{MOD_OP} 	{ printf("%d: Token MOD_OP: %s\n", yylineno, yytext); return MOD_OP; }
+{ASSIGN_OP}	{ printf("%d: Token ASSIGN_OP: %s\n", yylineno, yytext); return ASSIGN_OP; }
+
+{SEMI}					{ printf("%d: Token SEMI: %s\n", yylineno, yytext); return SEMI;}
+{LEFT_PAR}				{ printf("%d: Token LEFT_PAR: %s\n", yylineno, yytext); return LEFT_PAR; }
+{RIGHT_PAR}				{ printf("%d: Token RIGHT_PAR: %s\n", yylineno, yytext); return RIGHT_PAR; }
+{COMMA}		  	  		{ printf("%d: Token COMMA: %s\n", yylineno, yytext); return COMMA; }
+{LEFT_BRACKET}			{ printf("%d: Token LEFT_BRACKET: %s\n", yylineno, yytext); return LEFT_BRACKET; }
+{RIGHT_BRACKET} 		{ printf("%d: Token RIGHT_BRACKET: %s\n", yylineno, yytext); return RIGHT_BRACKET; }
+{LEFT_CURLY_BRACKET}	{ printf("%d: Token LEFT_CURLY_BRACKET: %s\n", yylineno, yytext); return LEFT_CURLY_BRACKET; }
+{RIGHT_CURLY_BRACKET}	{ printf("%d: Token RIGHT_CURLY_BRACKET: %s\n", yylineno, yytext); return RIGHT_CURLY_BRACKET; }
+{ARROW_DELIMITER} 		{ printf("%d: Token: ARROW_DELIMITER %s\n", yylineno, yytext); return ARROW_DELIMITER; }
+{COLON}					{ printf("%d: Token COLON: %s\n", yylineno, yytext); return COLON; }
+
+{MAIN_FUNCTION_HEAD} { printf("%d: Token: MAIN_FUNCTION_HEAD : %s\n", yylineno, yytext); return MAIN_FUNCTION_HEAD; }
+
+{ID} {
+	printf("%d: Token: IDENTIFIER: %s\n", yylineno, yytext);
+	return ID;
+	}
+
+{SL_COMMENT} { printf("%d: Single line comment detected\n", yylineno); }
+
+{ML_COMMENT} { printf("%d: Multiline comment starts\n", yylineno); BEGIN(ML_COMMENT); }
+<ML_COMMENT>[^*\n]+ /* Ignore whatever is inside the comment */
+<ML_COMMENT>"*)" { printf("%d: Multiline commment ends\n", yylineno); BEGIN(INITIAL); }
+<ML_COMMENT>"\n" /* Updates yylineno automatically */
+
+{NEW_LINE} /* Updates yylineno automatically */
+
+{WHITESPACE} /* Ignore whitespace */
+
+. { yyerror("Unrecognized token "); }
+
+%%

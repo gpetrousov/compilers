@@ -1,0 +1,28 @@
+-- File: useless.tc
+-- A piece of TeaC code for demonstration purposes
+
+const N <- 100: int;
+let a, b: int;
+const cube <- (i: int): int => {
+	return i*i*i;
+};
+
+const add <- (n: int, k: int): int => {
+	let j: int;
+
+	j <- (N-n) + cube(k);
+	writeInt(j);
+	return j;
+};
+
+(* Here you can see some useless lines.
+ * Just for testing the multi-line comments ...
+ *)
+
+const start <- (): int => {
+	a <- readInt();
+	b <- readInt();
+	add(a, b); -- Here you can see some dummy comments!
+
+	return 0;
+}

@@ -1,4 +1,15 @@
-all: flex
-	gcc teac.yy.c
+all: bison flex
+
+bison:
+	bison -d -v teac.y
+
 flex:
-	flex -o teac.yy.c teac.l
+	flex teac.l
+	gcc -o teac lex.yy.c teac.tab.c
+
+clean:
+	-rm teac
+	-rm lex.yy.c
+	-rm teac.tab.c
+	-rm teac.tab.h
+	-rm teac.output

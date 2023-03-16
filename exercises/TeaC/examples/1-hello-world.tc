@@ -1,0 +1,10 @@
+(* My first TeaC program.
+File: myprog.tc *)
+
+-- Constant
+const message[14] <- "Hello world!\n": string;
+
+const start <- (): int => {
+	let i <- 5 : int; -- Variable
+	i <- k * 2;
+}
