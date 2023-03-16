@@ -1,13 +1,12 @@
-<center>
-<h1>
-Compilers
-</h1>
-</center>
+<p align="center">
 
-<center>
-<img src="assets/header.jpeg"  width=50%>
+# Compilers
 
-</center>
+</p>
+
+<p align="center">
+  <img align=center width=50% src="assets/header.jpeg">
+</p>
 
 Following, are the notes I created while studying compilers primarily from 2 books:
 
