@@ -1570,3 +1570,8 @@ The reason to use `JIT` for a specific routine is because that routine might be 
 
 - What about compilers for quantum computers?
 - Can you apply an AI program to generate or parallelise sequential alrorithms?
+
+# Great resources
+
+Baby Steps to a C Compiler
+- https://www.wilfred.me.uk/blog/2014/08/27/baby-steps-to-a-c-compiler/
